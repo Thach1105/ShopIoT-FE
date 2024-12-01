@@ -26,7 +26,11 @@ function OrderRow({ order }) {
       <td className="py-4 px-6">
         <span
           className={`px-3 py-1 rounded-full text-white ${
-            order.orderStatus === "DELIVERED" ? "bg-green-500" : "bg-yellow-500"
+            order.orderStatus === "DELIVERED"
+              ? "bg-green-500"
+              : order.orderStatus === "CANCELLED"
+              ? "bg-red-500"
+              : "bg-yellow-500"
           }`}
         >
           {order.orderStatus}

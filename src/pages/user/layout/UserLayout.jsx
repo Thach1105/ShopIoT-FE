@@ -8,8 +8,10 @@ function UserLayout() {
       <div>
         <Header />
       </div>
-      <div className="w-5/6 flex-1 m-auto py-8 bg-gray-50">
-        <Outlet />
+      <div className="w-full bg-gray-100">
+        <div className="w-5/6 flex-1 m-auto py-8 bg-gray-100">
+          <Outlet />
+        </div>
       </div>
       <div>
         <Footer />

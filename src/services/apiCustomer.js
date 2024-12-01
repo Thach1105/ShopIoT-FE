@@ -25,3 +25,12 @@ export async function updateCustomer(updateUser, id) {
 
   return response;
 }
+
+export async function changePassword(body, id) {
+  const response = await axiosInstance.post(
+    `/users/${id}/change-password`,
+    body
+  );
+
+  return response;
+}

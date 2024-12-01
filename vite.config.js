@@ -8,4 +8,9 @@ export default defineConfig({
   // build: {
   //   outDir: "dist",
   // },
+  build: {
+    rollupOptions: {
+      external: ["react-quill/dist/quill.snow.css"],
+    },
+  },
 });

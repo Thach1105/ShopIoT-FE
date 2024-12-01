@@ -4,7 +4,7 @@ import { Button, ButtonGroup, Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { formatDateTime, formatNumber } from "../../../../utils/format";
-import "react-quill/dist/quill.snow.css";
+// import "react-quill/dist/quill.snow.css";
 import loadable from "@loadable/component";
 import { getOverallReviews, getReviews } from "../../../../services/apiReview";
 import {

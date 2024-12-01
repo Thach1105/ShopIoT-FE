@@ -100,14 +100,12 @@ function CartPage() {
           },
         }}
       >
-        {/* <Fade in={err}> */}
         <Box sx={styleModal}>
           <h1 className="text-xl text-red-500 underline">Thông báo:</h1>
           <Typography id="transition-modal-description" sx={{ mt: 2 }}>
             {err?.errorMessage}
           </Typography>
         </Box>
-        {/* </Fade> */}
       </Modal>
 
       {cart ? (

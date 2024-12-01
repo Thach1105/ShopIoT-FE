@@ -30,6 +30,10 @@ import SearchResultsPage from "../pages/user/features/category/SearchResultsPage
 import SearchOrderPage from "../pages/user/features/order/SearchOrderPage";
 import { getMyCart } from "../services/apiCart";
 import CreateOrder from "../pages/user/features/order/CreateOrder";
+import AccountLayout from "../pages/user/features/account/AccountInfoLayout";
+import MyOrder from "../pages/user/features/account/MyOrder";
+import AccountInfomation from "../pages/user/features/account/AccountInfomation";
+import PaymentNotice from "../utils/PaymentNotice";
 
 function Routes() {
   const { role } = useAuth();
@@ -86,6 +90,26 @@ function Routes() {
             {
               path: "/dat-hang",
               element: <CreateOrder />,
+            },
+            {
+              path: "/tai-khoan/quan-ly-don-hang",
+              element: (
+                <AccountLayout>
+                  <MyOrder />
+                </AccountLayout>
+              ),
+            },
+            {
+              path: "/tai-khoan/thong-tin-tai-khoan",
+              element: (
+                <AccountLayout>
+                  <AccountInfomation />
+                </AccountLayout>
+              ),
+            },
+            {
+              path: "/thanh-toan",
+              element: <PaymentNotice />,
             },
           ],
         },

@@ -54,3 +54,15 @@ export async function createOrder(newOrder) {
   const response = await axiosInstance.post(`/orders`, newOrder);
   return response;
 }
+
+export async function getMyOrder() {
+  const response = await axiosInstance.get(`/orders/my-orders`);
+  return response;
+}
+
+export async function cancelOrder(orderCode) {
+  const response = await axiosInstance.put(
+    `/orders/my-order/cancel/${orderCode}`
+  );
+  return response;
+}

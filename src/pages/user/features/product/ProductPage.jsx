@@ -9,6 +9,9 @@ import ProductImage from "./ProductImage";
 import ProductDescription from "./ProductDescription";
 import ProductReview from "./ProductReview";
 import { addProductToCart, themVaoGioHang } from "../../../../services/apiCart";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Fade from "@mui/material/Fade";
 
 // Components
 const StarRating = ({ rating }) => (
@@ -52,6 +55,10 @@ function ProductPage() {
   const location = useLocation();
   const { slug } = useParams();
   const { state } = location;
+
+  const [openSB, setOpenSB] = useState(false);
+  const [contentSB, setContentSB] = useState("");
+
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState();
   console.log(product);
@@ -82,6 +89,8 @@ function ProductPage() {
       quantity,
     };
     await addProductToCart(reqBody);
+    setOpenSB(true);
+    setContentSB("Đã thêm vào giỏ hàng");
   }
 
   async function testFunc() {
@@ -94,6 +103,17 @@ function ProductPage() {
 
   return product ? (
     <div className="flex gap-6">
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openSB}
+        autoHideDuration={1500}
+        onClose={() => setOpenSB(false)}
+        TransitionComponent={Fade}
+      >
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          {contentSB}
+        </Alert>
+      </Snackbar>
       <div className="flex-1 my-2 ">
         <ProductImage imageUrl={product.image_url} altText={product.name} />
 

@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "../configs/config";
+import axiosInstance from "../configs/axiosInstance";
 
 const url = `${config.url_Backend}/auth`;
 
@@ -23,4 +24,9 @@ export async function login(account) {
 
 export function logout() {
   localStorage.removeItem("token");
+}
+
+export async function getMyInfo() {
+  const response = await axiosInstance.get(`/users/my-profile`);
+  return response;
 }

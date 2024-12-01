@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import "react-quill/dist/quill.snow.css";
+// import "react-quill/dist/quill.snow.css";
 import loadable from "@loadable/component";
 
 const ReactQuill = loadable(() => import("react-quill"));

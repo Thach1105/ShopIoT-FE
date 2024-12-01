@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatNumber } from "../../../../utils/format";
 import axios from "axios";
 import { TextField } from "@mui/material";
+import { Backdrop, Box, Modal, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { createOrder } from "../../../../services/apiOrder";
+
+const styleModal = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  p: 4,
+};
 
 const customStyles = {
   control: (base) => ({
@@ -36,6 +47,7 @@ function CreateOrder() {
   const location = useLocation();
   const { cartSummary } = location.state;
   const { products } = location.state;
+  const navigate = useNavigate();
 
   const {
     register,
@@ -61,8 +73,9 @@ function CreateOrder() {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-
+  const [err, setErr] = useState();
   const [note, setNote] = useState("");
+  const [homeDelivery, setHomeDelivery] = useState(true);
 
   const selectedProvince = watch("province");
   const selectedDistrict = watch("district");
@@ -133,11 +146,16 @@ function CreateOrder() {
 
   const onSubmit = async (data) => {
     let address = "Nhận tại cửa hàng";
-    if (shippingFee) {
+    if (homeDelivery) {
       address = `${data.address}, ${data.ward.label}, ${data.district.label}, ${data.province.label}`;
+    } else {
+      address =
+        "Số 87-89, phố Hạ Đình, Phường Thanh Xuân Trung, Quận Thanh Xuân, Hà Nội";
     }
     const order = {
+      consigneeName: data.fullName,
       address,
+      homeDelivery,
       phone: data.phone,
       paymentType: paymentMethod,
       totalPrice: cartSummary.total + shippingFee,
@@ -151,9 +169,26 @@ function CreateOrder() {
         };
       }),
     };
-    const response = await createOrder(order);
-    console.log(response);
+
+    try {
+      const response = await createOrder(order);
+      console.log(response);
+      const { data } = response;
+      const newOrder = data?.content;
+      navigate("/tai-khoan/quan-ly-don-hang", { state: newOrder });
+    } catch (error) {
+      const { response } = error;
+      const { data } = response;
+      const err = {
+        errorCode: data?.code,
+        errorMessage: data?.message,
+      };
+
+      setErr(err);
+    }
   };
+
+  const handleResetError = () => setErr(null);
 
   return (
     <form
@@ -168,6 +203,28 @@ function CreateOrder() {
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             THÔNG TIN KHÁCH HÀNG
           </h2>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={err !== null && err !== undefined}
+            onClose={handleResetError}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            {/* <Fade in={err}> */}
+            <Box sx={styleModal}>
+              <h1 className="text-xl text-red-500 underline">Thông báo:</h1>
+              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                {`${err?.errorMessage} (code:${err?.errorCode})`}
+              </Typography>
+            </Box>
+            {/* </Fade> */}
+          </Modal>
 
           <div className="space-y-4">
             <div>
@@ -257,21 +314,25 @@ function CreateOrder() {
           <div className="grid grid-cols-2 gap-4">
             <button
               type="button"
-              onClick={() => setShippingFee(30000)}
+              onClick={() => {
+                setShippingFee(30000);
+                setHomeDelivery(true);
+              }}
               className={`border p-4 rounded flex items-center justify-center gap-2 ${
-                shippingFee === 30000
-                  ? "bg-blue-50 border-blue-500"
-                  : "hover:bg-gray-50"
+                homeDelivery ? "bg-blue-50 border-blue-500" : "hover:bg-gray-50"
               }`}
             >
               <span>🚚</span>
               Giao hàng tận nhà
             </button>
             <button
-              onClick={() => setShippingFee(0)}
+              onClick={() => {
+                setShippingFee(0);
+                setHomeDelivery(false);
+              }}
               type="button"
               className={`border p-4 rounded flex items-center justify-center gap-2 ${
-                shippingFee === 0
+                !homeDelivery
                   ? "bg-blue-50 border-blue-500"
                   : "hover:bg-gray-50"
               }`}
@@ -282,7 +343,7 @@ function CreateOrder() {
           </div>
 
           <div className="bg-gray-100 p-4 mt-4 rounded">
-            {shippingFee === 30000 ? (
+            {homeDelivery ? (
               <>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>

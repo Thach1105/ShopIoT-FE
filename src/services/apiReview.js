@@ -26,3 +26,16 @@ export async function getMyReviewForProduct(productId) {
 
   return response;
 }
+
+export async function createReview(review) {
+  const response = await axiosInstance.post(`/reviews`, review);
+  return response;
+}
+
+export async function updateReview(review, reviewId) {
+  const response = await axiosInstance.put(
+    `/reviews/update/${reviewId}`,
+    review
+  );
+  return response;
+}

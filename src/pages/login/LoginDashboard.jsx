@@ -34,6 +34,7 @@ function LoginDashboard() {
 
     try {
       const { data } = await login(account);
+      console.log(data);
       setErrMsg();
       setToken(data?.content?.token);
       const decode = jwtDecode(data?.content?.token);

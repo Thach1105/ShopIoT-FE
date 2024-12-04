@@ -18,6 +18,7 @@ import { useUserState } from "../../../provider/UserContext";
 
 function Header() {
   const { cart } = useUserState();
+
   const cartItems = cart?.products || [];
   const { token, setToken } = useAuth();
   const [userInfo, setUserInfo] = useState({});
@@ -42,6 +43,7 @@ function Header() {
   useEffect(() => {
     async function fetchCategories() {
       const response = await getCategoriesTree();
+      console.log(response);
       const { data } = response;
       setCategories(data?.content);
     }
@@ -344,9 +346,9 @@ function Header() {
               </div>
             )}
           </div>
-          <div className="font-semibold cursor-pointer p-2 w-1/4 hover:bg-teal-400">
+          {/* <div className="font-semibold cursor-pointer p-2 w-1/4 hover:bg-teal-400">
             <p className="text-center">Sản phẩm mới</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

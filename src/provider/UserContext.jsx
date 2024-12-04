@@ -16,6 +16,8 @@ export function UserProvider({ children }) {
     JSON.parse(localStorage.getItem("viewedProducts")) || []
   );
 
+  console.log(cart);
+
   useEffect(() => {
     if (token && changedCart) {
       async function fetchMyCart() {

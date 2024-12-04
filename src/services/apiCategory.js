@@ -17,7 +17,18 @@ export async function createNewCateogory(newCategory) {
 }
 
 export async function getCategoriesTree() {
-  const response = await axios.get(`${url}/categories`);
+  const response = await axios.get(
+    `${url}/categories`,
+    {},
+    {
+      headers: {
+        "ngrok-skip-browser-warning": true,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const { data } = response;
+  console.log(data);
   return response;
 }
 

@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button, Modal, Rating, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { formatDateTime, formatNumber } from "../../../../utils/format";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,7 @@ import {
   paymentByVNPAY,
   paymentByZALOPAY,
 } from "../../../../services/apiPayment";
+// import { getMyReviewForProduct } from "../../../../services/apiReview";
 
 const displayStatusOrder = (status) => {
   switch (status) {
@@ -46,14 +47,40 @@ const displayStatusOrder = (status) => {
   }
 };
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function OrderInformation({ order, setOrder }) {
   const { orderDetail } = order;
   const navigate = useNavigate();
+
   const [err, setErr] = useState();
+  const [selectedProductRv, setSelectedProductRV] = useState();
+
+  console.log(selectedProductRv);
   const totalPriceItems = orderDetail.reduce(
     (total, item) => total + item.totalPrice,
     0
   );
+
+  // const [myReview, setMyReview] = useState();
+
+  // useEffect(() => {
+  //   async function fetchMyReviewProduct() {
+  //     try {
+  //       const response = getMyReviewForProduct();
+  //     } catch (error) {}
+  //   }
+  // }, []);
 
   const handleCancelOrder = async () => {
     try {
@@ -135,6 +162,28 @@ function OrderInformation({ order, setOrder }) {
   return (
     <div className="p-6 w-full mx-auto bg-white">
       <MyModal err={err} handleResetError={handleResetErr} />
+      <Modal
+        open={selectedProductRv}
+        onClose={() => setSelectedProductRV(null)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Đánh giá sản phẩm
+          </Typography>
+          <div className="flex justify-center items-center gap-2">
+            <img src={selectedProductRv?.imageUrl} className="h-16 w-fit" />
+            <p>{selectedProductRv?.productName}</p>
+          </div>
+          <div className="flex justify-center">
+            <Rating name="size-large" defaultValue={2} size="large" />
+          </div>
+          <button className="border-2 px-2 py-1 bg-red-500 text-white hover:bg-red-700 hover:font-semibold">
+            Đánh giá
+          </button>
+        </Box>
+      </Modal>
       {/* Header */}
       <div className="flex items-center gap-2 mb-6">
         <span
@@ -239,12 +288,16 @@ function OrderInformation({ order, setOrder }) {
                         {item.product.sku}
                       </p>
                       <div className="flex gap-2 mt-2">
-                        <Button size="small" variant="outlined">
-                          Đã nhận xét
+                        <Button
+                          onClick={() => setSelectedProductRV(item.product)}
+                          size="small"
+                          variant="outlined"
+                        >
+                          Đánh giá
                         </Button>
-                        <Button size="small" variant="outlined">
+                        {/* <Button size="small" variant="outlined">
                           Mua lại
-                        </Button>
+                        </Button> */}
                       </div>
                     </div>
                   </div>

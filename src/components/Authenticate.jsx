@@ -39,7 +39,7 @@ export default function Authenticate() {
       if (role === "ADMIN") {
         navigate("/admin", { replace: true });
       } else if (role === "USER") {
-        navigate("/profile", { replace: true });
+        navigate("/", { replace: true });
       }
     }
   }, [isLoggedin, navigate, role, setToken]);

@@ -8,6 +8,8 @@ import { updateProduct } from "../../../../services/apiProduct";
 import { formatDateTime } from "../../../../utils/format";
 import { getBrands } from "../../../../services/apiBrand";
 import { TextField } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function categorySelect(categories, depth = 0) {
   return categories.map((category, index) => (
@@ -36,8 +38,9 @@ function convertDetailToArray(details) {
 }
 
 function ProductEdit() {
-  const thisProduct = useLoaderData();
+  const [thisProduct, setProduct] = useState(useLoaderData());
 
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const [image, setImage] = useState();
   const [productName, setProductName] = useState(thisProduct.name);
   const [sku, setSKU] = useState(thisProduct.sku);
@@ -52,7 +55,7 @@ function ProductEdit() {
     convertDetailToArray(thisProduct.productDetails)
   );
   const [price, setPrice] = useState(thisProduct.price);
-  const [cost, setCoset] = useState(thisProduct.cost);
+  const [cost, setCost] = useState(thisProduct.cost);
   const [active, setActive] = useState(thisProduct.active);
   const [categoryId, setCategoryId] = useState(thisProduct.category?.id || 0);
   const [brandId, setBrandId] = useState(thisProduct.brand?.id || 0);
@@ -108,6 +111,14 @@ function ProductEdit() {
     setOptions(updatedOptions);
   };
 
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  };
+
   async function handleSave() {
     const postProduct = {
       name: productName,
@@ -128,31 +139,49 @@ function ProductEdit() {
     };
 
     const res = await updateProduct(postProduct, image, thisProduct.id);
-    console.log(res);
+    setOpenSnackBar(true);
+    const { data } = res;
+    setProduct(data.content);
   }
 
   return (
     <div className="max-w-full mx-auto bg-white p-6 rounded-lg shadow-md">
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackBar}
+      >
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Cập nhật sản phẩm thành công
+        </Alert>
+      </Snackbar>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Product Edit</h1>
+        <h1 className="text-3xl font-bold">Cập nhật sản phẩm</h1>
         <div className="space-x-2">
           <button
             onClick={handleSave}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-600"
           >
-            Save
+            Lưu
           </button>
         </div>
       </div>
-      <p className="text-gray-500 mb-6">Orders placed across your store</p>
+      <p className="text-gray-500 mb-6">
+        Sản phẩm sẽ được hiển thị trên cửa hàng
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           <div className="bg-gray-100 p-4 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold mb-4">Product information</h2>
-            <label className="block mb-2 text-gray-600">Product Name</label>
+            <h2 className="text-lg font-semibold mb-4">Thông tin sản phẩm</h2>
+            <label className="block mb-2 text-gray-600">Tên sản phẩm</label>
             <input
               type="text"
-              placeholder="Product Name"
+              placeholder="Tên sản phẩm"
               className="w-full p-2 mb-4 border bg-white rounded"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
@@ -171,7 +200,7 @@ function ProductEdit() {
 
               <div>
                 <label className="block mb-2 text-gray-600">
-                  Total Stock Quantity
+                  Số lượng sản phẩm trong kho
                 </label>
                 <input
                   type="number"
@@ -196,7 +225,7 @@ function ProductEdit() {
             </div>
             <div className="mb-4">
               <label className="block mb-2 text-gray-600">
-                Short Description (Optional)
+                Mô tả ngắn gọn (Tùy chọn)
               </label>
 
               <TextField
@@ -205,21 +234,21 @@ function ProductEdit() {
                 onChange={(e) => setShortDescription(e.target.value)}
                 id="filled-textarea"
                 //label="Short Description (Optional)"
-                placeholder="Placeholder"
+                placeholder="Nhập mô tả"
                 multiline
                 variant="filled"
               />
             </div>
             <div>
               <label className="block mb-2 text-gray-600">
-                Long Description (Optional)
+                Mô tả đầy đủ (Tùy chọn)
               </label>
               <TextEditor text={longDescription} setText={setLongDescription} />
             </div>
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold mb-4">Product Image</h2>
+            <h2 className="text-lg font-semibold mb-4">Ảnh sản phẩm</h2>
             <div
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
@@ -262,24 +291,12 @@ function ProductEdit() {
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Product Options</h2>
+            <h2 className="text-lg font-semibold mb-4">Thông số kỹ thuật</h2>
             <div className="border-dashed border-2 border-gray-300 p-6 text-center rounded-lg">
               {options.map((opt, index) => (
                 <div key={index} className="flex items-center space-x-4 mb-4">
                   <div className="flex-1">
-                    {/* <label className="block text-sm font-medium text-gray-700">
-                      Option
-                    </label> */}
                     <div className="mt-1 relative rounded-md shadow-sm">
-                      {/* <input
-                        type="text"
-                        className="block w-full pr-10 sm:text-sm border-gray-300 rounded-md p-2 mb-4 border"
-                        value={opt.option}
-                        onChange={(e) =>
-                          handleOptionChange(index, "option", e.target.value)
-                        }
-                        placeholder="Option"
-                      /> */}
                       <TextField
                         className="block w-full pr-10 sm:text-sm bg-white border-gray-300 rounded-md p-2 mb-4 border"
                         id="outlined-basic"
@@ -293,22 +310,7 @@ function ProductEdit() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    {/* <label className="block text-sm font-medium text-gray-700">
-                      Value
-                    </label> */}
                     <div className="mt-1 relative rounded-md shadow-sm">
-                      {/* <textarea
-                        type="text"
-                        className="block w-full sm:text-sm border-gray-300 rounded-md p-2 mb-4 border"
-                        value={opt.value}
-                        rows={1}
-                        style={{ overflowY: "auto" }}
-                        onChange={(e) =>
-                          handleOptionChange(index, "value", e.target.value)
-                        }
-                        placeholder="Value"
-                      />
-                       */}
                       <TextField
                         id="outlined-multiline-flexible"
                         label="Value"
@@ -334,7 +336,7 @@ function ProductEdit() {
                 onClick={handleAddOption}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <i className="fas fa-plus mr-2"></i> Add Another Option
+                <i className="fas fa-plus mr-2"></i> Thêm thông số kỹ thuật
               </button>
             </div>
           </div>
@@ -342,32 +344,32 @@ function ProductEdit() {
 
         <div className="space-y-6">
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Pricing</h2>
-            <div className="flex">
-              <label className="p-2 font-semibold">Price: </label>
-              <input
-                type="number"
-                placeholder="Price"
-                className="w-full p-2 mb-4 border rounded"
+            <h2 className="text-lg font-semibold mb-4">Giá cả</h2>
+            <div className="flex items-center mb-3">
+              <TextField
+                id="outlined-basic"
+                label="Giá niêm yết"
+                variant="outlined"
+                className="w-full mb-4 border rounded"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
               <p className="p-2 font-semibold">VND</p>
             </div>
-            <div className="flex">
-              <label className="p-2 font-semibold">Cost: </label>
-              <input
-                type="number"
-                placeholder="Cost"
-                className="w-full p-2 mb-4 border rounded"
+            <div className="flex items-center mb-3">
+              <TextField
+                id="outlined-basic"
+                label="Giá bán"
+                variant="outlined"
+                className="w-full mb-4 border rounded"
                 value={cost}
-                onChange={(e) => setCoset(e.target.value)}
+                onChange={(e) => setCost(e.target.value)}
               />
               <p className="p-2 font-semibold">VND</p>
             </div>
 
             <div className="flex">
-              <p className="p-2 font-semibold">Discount: </p>
+              <p className="p-2 font-semibold whitespace-nowrap">Giảm giá: </p>
               <p className="w-full p-2 mb-4 border rounded bg-white">
                 {(
                   ((Number(price) - Number(cost)) / Number(price)) *
@@ -378,16 +380,16 @@ function ProductEdit() {
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Organize</h2>
+            <h2 className="text-lg font-semibold mb-4">Phân loại</h2>
             <div className="flex items-center mb-4">
               <div className="flex-1">
-                <p className="mb-1 text-gray-600 px-2">Category</p>
+                <p className="mb-1 text-gray-600 px-2">Danh mục sản phẩm</p>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
                   className="w-full p-2 border rounded"
                 >
-                  <option value={0}>Select Category</option>
+                  <option value={0}>Thương hiệu sản phẩm</option>
                   {categorySelect(categories)}
                 </select>
               </div>
@@ -401,50 +403,54 @@ function ProductEdit() {
             </div>
 
             <div className="">
-              <p className="mb-1 text-gray-600 px-2">Brand</p>
+              <p className="mb-1 text-gray-600 px-2">Thương hiệu</p>
               <select
                 value={brandId}
                 onChange={(e) => setBrandId(e.target.value)}
                 className="w-full p-2 mb-4 border rounded"
               >
-                <option value={0}>Select Brand</option>
+                <option value={0}>Chọn thương hiệu</option>
                 {brandSelect(brands)}
               </select>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-600 px-2">Status</p>
+              <p className="mb-1 text-gray-600 px-2">Trạng thái</p>
               <select
                 value={active}
                 onChange={(e) => setActive(e.target.value)}
                 className="w-full p-2 mb-4 border rounded"
               >
-                <option value={true}>Publish</option>
-                <option value={false}>Hidden</option>
+                <option value={true}>Hiển thị</option>
+                <option value={false}>Ẩn</option>
               </select>
             </div>
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Metadata</h2>
+            <h2 className="text-lg font-semibold mb-4">Thông tin khác</h2>
             <div>
               <p className="mb-1 text-gray-600 px-2">ID: </p>
               <p className="flex-1 p-2 mb-4 border rounded">{`#${thisProduct.id}`}</p>
             </div>
             <div>
-              <p className="mb-1 text-gray-600 px-2">Number of sales: </p>
+              <p className="mb-1 text-gray-600 px-2">
+                Số lượng sản phẩm đã bán:
+              </p>
               <p className="flex-1 p-2 mb-4 border rounded">
                 {thisProduct.salesNumber}
               </p>
             </div>
             <div>
-              <p className="mb-1 text-gray-600 px-2">Create Time: </p>
+              <p className="mb-1 text-gray-600 px-2">Thời gian tạo: </p>
               <p className="flex-1 p-2 mb-4 border rounded">
                 {formatDateTime(thisProduct.createdAt)}
               </p>
             </div>
             <div>
-              <p className="mb-1 text-gray-600 px-2">Last Update Time: </p>
+              <p className="mb-1 text-gray-600 px-2">
+                Thời gian cập nhật gần nhất:
+              </p>
               <p className="flex-1 p-2 mb-4 border rounded">
                 {formatDateTime(thisProduct.updatedAt)}
               </p>

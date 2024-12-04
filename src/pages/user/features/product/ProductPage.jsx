@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getProductBySlug } from "../../../../services/apiProduct";
 import Loading from "../../../../utils/Loading";
 import { formatNumber } from "../../../../utils/format";
@@ -8,10 +8,11 @@ import SpecificationTable from "./SpecificationTable";
 import ProductImage from "./ProductImage";
 import ProductDescription from "./ProductDescription";
 import ProductReview from "./ProductReview";
-import { addProductToCart, themVaoGioHang } from "../../../../services/apiCart";
+import { addProductToCart } from "../../../../services/apiCart";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
+import { useUserState } from "../../../../provider/UserContext";
 
 // Components
 const StarRating = ({ rating }) => (
@@ -52,8 +53,10 @@ const QuantitySelector = ({ quantity, onIncrease, onDecrease, onChange }) => (
 );
 
 function ProductPage() {
+  const { setChangedCart, setChangeViewedProduct } = useUserState();
   const location = useLocation();
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { state } = location;
 
   const [openSB, setOpenSB] = useState(false);
@@ -63,17 +66,49 @@ function ProductPage() {
   const [product, setProduct] = useState();
   console.log(product);
 
+  const saveProductToLocalStorage = (product) => {
+    const storedProducts =
+      JSON.parse(localStorage.getItem("viewedProducts")) || [];
+    const isAlreadyViewed = storedProducts.some((p) => p.id === product.id);
+
+    if (!isAlreadyViewed) {
+      const updatedProducts = [
+        ...storedProducts,
+        {
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          cost: product.cost,
+          price: product.price,
+          image_url: product.image_url,
+          stock: product.stock,
+          discountPercentage: product.discountPercentage,
+        },
+      ];
+      localStorage.setItem("viewedProducts", JSON.stringify(updatedProducts));
+    }
+  };
+
+  useEffect(() => {
+    setChangeViewedProduct(true);
+  }, []);
+
   useEffect(() => {
     if (!state) {
       async function fetchProduct() {
         const response = await getProductBySlug(slug);
         const { data } = response;
         setProduct(data?.content);
+
+        if (data?.content) {
+          saveProductToLocalStorage(data.content);
+        }
       }
 
       fetchProduct();
     } else {
       setProduct(state);
+      saveProductToLocalStorage(state);
     }
   }, [slug, state]);
 
@@ -89,13 +124,19 @@ function ProductPage() {
       quantity,
     };
     await addProductToCart(reqBody);
+    setChangedCart(true);
     setOpenSB(true);
     setContentSB("Đã thêm vào giỏ hàng");
   }
 
-  async function testFunc() {
-    const response = await themVaoGioHang();
-    console.log(response);
+  async function buyNow() {
+    const reqBody = {
+      product_id: product.id,
+      quantity,
+    };
+    await addProductToCart(reqBody);
+    setChangedCart(true);
+    navigate("/gio-hang");
   }
 
   const handleIncrease = () => setQuantity((prev) => prev + 1);
@@ -182,7 +223,7 @@ function ProductPage() {
               Thêm vào giỏ hàng
             </button>
             <button
-              onClick={testFunc}
+              onClick={buyNow}
               className="bg-red-500 w-1/2 text-white font-semibold px-4 py-2 hover:bg-red-700/80 transition-colors"
             >
               Mua ngay

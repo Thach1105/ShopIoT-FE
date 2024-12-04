@@ -32,7 +32,7 @@ function Sidebar() {
           to={"/admin/dashboard"}
         >
           <span className="text-xl font-bold  hover:text-yellow-200">
-            <FontAwesomeIcon icon={faGaugeHigh} /> Dashboard
+            <FontAwesomeIcon icon={faGaugeHigh} /> Thống kê
           </span>
         </Link>
         {/* Products */}
@@ -40,21 +40,21 @@ function Sidebar() {
           <details>
             <summary className="flex">
               <span className="text-xl font-bold hover:text-yellow-200">
-                <FontAwesomeIcon icon={faBox} /> Products
+                <FontAwesomeIcon icon={faBox} /> Sản phẩm
               </span>
             </summary>
             <ul className="bg-base-100 rounded-t-none p-2">
               <li>
                 <Link to={"/admin/product/list"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Product List
+                    Danh sách sản phẩm
                   </span>
                 </Link>
               </li>
               <li>
                 <Link to={"/admin/product/add"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    New Product
+                    Thêm sảm phẩm mới
                   </span>
                 </Link>
               </li>
@@ -68,7 +68,7 @@ function Sidebar() {
           to={"/admin/brand/list"}
         >
           <span className="text-xl font-bold  hover:text-yellow-200">
-            <FontAwesomeIcon icon={faTags} /> Brand
+            <FontAwesomeIcon icon={faTags} /> Thương hiệu
           </span>
         </Link>
         {/* Categories */}
@@ -76,21 +76,21 @@ function Sidebar() {
           <details>
             <summary className="flex">
               <span className="text-xl font-bold hover:text-yellow-200">
-                <FontAwesomeIcon icon={faBarsStaggered} /> Categories
+                <FontAwesomeIcon icon={faBarsStaggered} /> Danh mục
               </span>
             </summary>
             <ul className="bg-base-100 rounded-t-none p-2">
               <li>
                 <Link to={"/admin/categories-list"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Categories List
+                    Danh sách danh mục
                   </span>
                 </Link>
               </li>
               <li>
                 <Link to={"/admin/category/create"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Categories Add
+                    Thêm danh mục
                   </span>
                 </Link>
               </li>
@@ -109,14 +109,14 @@ function Sidebar() {
           <details>
             <summary className="flex">
               <span className="text-xl font-bold hover:text-yellow-200">
-                <FontAwesomeIcon icon={faCartShopping} /> Orders
+                <FontAwesomeIcon icon={faCartShopping} /> Đơn hàng
               </span>
             </summary>
             <ul className="bg-base-100 rounded-t-none p-2">
               <li>
                 <Link to={"/admin/order-list"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Order List
+                    Danh sách đơn hàng
                   </span>
                 </Link>
               </li>
@@ -135,21 +135,21 @@ function Sidebar() {
           <details>
             <summary className="flex">
               <span className="text-xl font-bold hover:text-yellow-200">
-                <FontAwesomeIcon icon={faUsers} /> Customers
+                <FontAwesomeIcon icon={faUsers} /> Người dùng
               </span>
             </summary>
             <ul className="bg-base-100 rounded-t-none p-2">
               <li>
                 <Link to={"/admin/customer-list"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Customers List
+                    Danh sách người dùng
                   </span>
                 </Link>
               </li>
               <li>
                 <Link to={"/admin/customer-details/:customerId"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
-                    Customers Details
+                    Thông tin người dùng
                   </span>
                 </Link>
               </li>
@@ -161,7 +161,8 @@ function Sidebar() {
           onClick={handleLogout}
         >
           <span className="text-xl font-bold">
-            <FontAwesomeIcon icon={faRightFromBracket} rotation={180} /> Logout
+            <FontAwesomeIcon icon={faRightFromBracket} rotation={180} /> Đăng
+            xuất
           </span>
         </div>
       </nav>

@@ -55,7 +55,7 @@ export default function BrandAdd({ open, setOpen }) {
           <div className="flex items-center justify-center bg-gray-100">
             <div className="bg-white rounded-lg shadow-lg p-4 w-full ">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Add Brand</h2>
+                <h2 className="text-xl font-bold">Thêm thương hiệu</h2>
                 <button
                   onClick={handleClose}
                   className="text-gray-500 hover:text-gray-700"
@@ -65,7 +65,9 @@ export default function BrandAdd({ open, setOpen }) {
               </div>
               <form>
                 <div className="mb-4">
-                  <label className="block text-gray-700 mb-1">Brand Name</label>
+                  <label className="block text-gray-700 mb-1">
+                    Tên thương hiệu
+                  </label>
                   <input
                     type="text"
                     className="w-full px-3 py-2 border rounded"
@@ -107,7 +109,7 @@ export default function BrandAdd({ open, setOpen }) {
                     type="submit"
                     className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-green-600 hover:font-semibold"
                   >
-                    Add
+                    Thêm mới
                   </button>
                 </div>
               </form>

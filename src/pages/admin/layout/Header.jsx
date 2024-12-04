@@ -1,5 +1,5 @@
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../../provider/authProvider";
 import { jwtDecode } from "jwt-decode";
@@ -17,7 +17,7 @@ export default function Header() {
   }, [token]);
 
   return (
-    <div className="flex justify-end items-center">
+    <div className="flex justify-end items-center py-2 px-4 bg-gradient-to-r from-pink-300 via-purple-400 to-blue-500 rounded-lg">
       <div className="flex items-center gap-3">
         <FontAwesomeIcon icon={faBell} size="xl" />
         <div className="flex items-center">
@@ -31,7 +31,7 @@ export default function Header() {
             <div className="text-sm text-gray-500">Admin Profile</div>
           </div>
         </div>
-        <FontAwesomeIcon icon={faGear} size="lg" />
+        {/* <FontAwesomeIcon icon={faGear} size="lg" /> */}
       </div>
     </div>
   );

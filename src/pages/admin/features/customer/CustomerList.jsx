@@ -1,15 +1,15 @@
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { getUsers } from "../../../../services/apiCustomer";
-import Pagination from "../../../../utils/Pagination";
+import TablePagination from "@mui/material/TablePagination";
 import EditCustomerForm from "./EditCustomerForm";
 import { Link } from "react-router-dom";
 
 function CustomerList() {
   const [users, setUsers] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageDetail, setPageDetail] = useState({});
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -18,7 +18,7 @@ function CustomerList() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const { data } = await getUsers(pageNumber, pageSize);
+        const { data } = await getUsers(pageNumber + 1, pageSize);
         setUsers(data.content);
         setPageDetail(data.pageDetails);
       } catch (error) {
@@ -28,21 +28,14 @@ function CustomerList() {
     fetchUser();
   }, [pageNumber, pageSize]);
 
-  function handleChangePageSize(e) {
-    setPageSize(Number(e.target.value));
-  }
+  const handleChangePage = (event, newPage) => {
+    setPageNumber(newPage);
+  };
 
-  function handleDecreasePageNum() {
-    if (pageNumber > 1) {
-      setPageNumber((pageNumber) => pageNumber - 1);
-    }
-  }
-
-  function handleIncreasePageNum() {
-    if (pageNumber < pageDetail.totalPages) {
-      setPageNumber((pageNumber) => pageNumber + 1);
-    }
-  }
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNumber(0);
+  };
 
   function onCloseEditForm() {
     setIsEditing(false);
@@ -59,9 +52,9 @@ function CustomerList() {
         />
       )}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Customers Information</h1>
+        <h1 className="text-2xl font-bold">Quản lý người dùng</h1>
         <button className="bg-purple-500 text-white px-4 py-2 rounded flex items-center">
-          <FontAwesomeIcon className="pr-2" icon={faPlus} /> Add Customers
+          <FontAwesomeIcon className="pr-2" icon={faPlus} /> Thêm người dùng
         </button>
       </div>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -72,19 +65,19 @@ function CustomerList() {
                 ID
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                CUSTOMER
+                TÊN
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                DATE OF BIRTH
+                NGÀY SINH
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                MAIL
+                EMAIL
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                PHONE
+                ĐIỆN THOẠI
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                ACTION
+                TÙY CHỈNH
               </th>
             </tr>
           </thead>
@@ -140,21 +133,19 @@ function CustomerList() {
                   >
                     <FontAwesomeIcon icon={faPenToSquare} size="lg" />
                   </button>
-                  <button className="text-red-600 hover:text-red-900">
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <Pagination
-          handleDecPage={handleDecreasePageNum}
-          handleIncPage={handleIncreasePageNum}
-          totalElements={pageDetail.totalElements || 0}
-          pageSize={pageSize}
-          handleChangePageSize={handleChangePageSize}
+        <TablePagination
+          component="div"
+          count={pageDetail.totalElements}
+          page={pageNumber}
+          onPageChange={handleChangePage}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </div>
     </div>

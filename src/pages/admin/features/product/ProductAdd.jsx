@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getCategoriesTree } from "../../../../services/apiCategory";
 import { createNewProduct } from "../../../../services/apiProduct";
 import { TextField } from "@mui/material";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 
 function categorySelect(categories, depth = 0) {
   return categories.map((category, index) => (
@@ -27,7 +28,7 @@ function ProductAdd() {
   const [longDescription, setLongDescription] = useState("");
   const [options, setOptions] = useState([]);
   const [price, setPrice] = useState();
-  const [cost, setCoset] = useState();
+  const [cost, setCost] = useState();
   const [active, setActive] = useState(true);
   const [categoryId, setCategoryId] = useState(0);
   const [brandId, setBrandId] = useState(0);
@@ -112,32 +113,34 @@ function ProductAdd() {
   return (
     <div className="max-w-full mx-auto bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Add a new Product</h1>
+        <h1 className="text-2xl font-semibold">Thêm một sản phẩm mới</h1>
         <div className="space-x-2">
           <button
             onClick={handleSaveNewProduct}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-600"
           >
-            Publish Product
+            Lưu sản phẩm
           </button>
         </div>
       </div>
-      <p className="text-gray-500 mb-6">Orders placed across your store</p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <p className="text-gray-500 mb-6">
+        Sản phẩm sẽ được hiển thị trên cửa hàng
+      </p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           <div className="bg-gray-100 p-4 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold mb-4">Product information</h2>
-            <label className="block mb-2 text-gray-600">Product Name</label>
+            <h2 className="text-lg font-semibold mb-4">Thông tin sản phẩm</h2>
+            <label className="block mb-2 text-gray-600">Tên sản phẩm</label>
             <input
               type="text"
-              placeholder="Product Name"
+              placeholder="Tên sản phẩm"
               className="w-full p-2 mb-4 border rounded"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
             />
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <label className="block mb-2 text-gray-600">SKU</label>
+                <label className="block mb-2 text-gray-600">Mã SKU</label>
                 <input
                   type="text"
                   placeholder="SKU"
@@ -148,17 +151,18 @@ function ProductAdd() {
               </div>
 
               <div>
-                <label className="block mb-2 text-gray-600">Stock</label>
+                <label className="block mb-2 text-gray-600">Sô lượng</label>
                 <input
                   type="number"
-                  placeholder="Stock"
+                  placeholder="Số lượng"
                   className="w-full p-2 border rounded"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex mb-6">
+            <div className="flex flex-col mb-6">
+              <label className="block mb-2 text-gray-600">Đường dẫn</label>
               <span className="bg-gray-200 border border-r-0 rounded-l px-3 py-2">
                 https://ShopIoT.com/san-pham/
               </span>
@@ -172,7 +176,7 @@ function ProductAdd() {
             </div>
             <div className="mb-4">
               <label className="block mb-2 text-gray-600">
-                Short Description (Optional)
+                Mô tả ngắn gọn (Tùy chọn)
               </label>
 
               <TextField
@@ -186,14 +190,14 @@ function ProductAdd() {
             </div>
             <div>
               <label className="block mb-2 text-gray-600">
-                Long Description (Optional)
+                Mô tả đầy đủ (Tùy chọn)
               </label>
               <TextEditor text={longDescription} setText={setLongDescription} />
             </div>
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold mb-4">Product Image</h2>
+            <h2 className="text-lg font-semibold mb-4">Hình ảnh sản phẩm</h2>
             <div
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
@@ -235,7 +239,7 @@ function ProductAdd() {
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Product Options</h2>
+            <h2 className="text-lg font-semibold mb-4">Thông số</h2>
             <div className="border-dashed border-2 border-gray-300 p-6 text-center rounded-lg">
               {options.map((opt, index) => (
                 <div key={index} className="flex items-center space-x-4 mb-4">
@@ -255,7 +259,7 @@ function ProductAdd() {
                       /> */}
                       <TextField
                         id="outlined-basic"
-                        label="Option"
+                        label="Tên thông số"
                         variant="outlined"
                         className="block w-full pr-10 sm:text-sm border-gray-300 rounded-md p-2 mb-4 border"
                         value={opt.option}
@@ -284,7 +288,7 @@ function ProductAdd() {
                       <TextField
                         className="block w-full sm:text-sm border-gray-300 rounded-md p-2 mb-4 border"
                         id="outlined-multiline-flexible"
-                        label="Multiline"
+                        label="Giá trị"
                         multiline
                         maxRows={6}
                         value={opt.value}
@@ -306,7 +310,7 @@ function ProductAdd() {
                 onClick={handleAddOption}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <i className="fas fa-plus mr-2"></i> Add Another Option
+                <i className="fas fa-plus mr-2"></i> Thêm thông số kỹ thuật
               </button>
             </div>
           </div>
@@ -314,32 +318,32 @@ function ProductAdd() {
 
         <div className="space-y-6">
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Pricing</h2>
-            <div className="flex">
-              <label className="p-2 font-semibold">Price: </label>
-              <input
-                type="number"
-                placeholder="Price"
-                className="w-full p-2 mb-4 border rounded"
+            <h2 className="text-lg font-semibold mb-4">Giá cả</h2>
+            <div className="flex items-center mb-3">
+              <TextField
+                id="outlined-basic"
+                label="Giá niêm yết"
+                variant="outlined"
+                className="w-full mb-4 border rounded"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
               <p className="p-2 font-semibold">VND</p>
             </div>
-            <div className="flex">
-              <label className="p-2 font-semibold">Cost: </label>
-              <input
-                type="number"
-                placeholder="Cost"
-                className="w-full p-2 mb-4 border rounded"
+            <div className="flex items-center mb-3">
+              <TextField
+                id="outlined-basic"
+                label="Giá bán"
+                variant="outlined"
+                className="w-full mb-4 border rounded"
                 value={cost}
-                onChange={(e) => setCoset(e.target.value)}
+                onChange={(e) => setCost(e.target.value)}
               />
               <p className="p-2 font-semibold">VND</p>
             </div>
 
             <div className="flex">
-              <p className="p-2 font-semibold">Discount: </p>
+              <p className="p-2 font-semibold whitespace-nowrap">Giảm giá: </p>
               <p className="w-full p-2 mb-4 border rounded bg-white">
                 {price && cost
                   ? (
@@ -352,22 +356,22 @@ function ProductAdd() {
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Organize</h2>
-            <div className="flex items-center mb-4">
+            <h2 className="text-lg font-semibold mb-4">Phân loại</h2>
+            <div className="flex items-center justify-center mb-4">
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 className="w-full p-2 border rounded"
               >
-                <option value={0}>Select Category</option>
+                <option value={0}>Chọn danh mục</option>
                 {categorySelect(categories)}
               </select>
 
               <Link
                 to={"/admin/category/create"}
-                className="ml-2 p-2 bg-blue-600 text-white rounded-xl"
+                className="ml-2 px-1 text-center bg-blue-600 text-white rounded-full"
               >
-                +
+                <FontAwesomeIcon icon={faPlus} />
               </Link>
             </div>
 
@@ -376,7 +380,7 @@ function ProductAdd() {
               onChange={(e) => setBrandId(e.target.value)}
               className="w-full p-2 mb-4 border rounded"
             >
-              <option value={0}>Select Brand</option>
+              <option value={0}>Chọn thương hiệu</option>
             </select>
 
             <select
@@ -384,8 +388,8 @@ function ProductAdd() {
               onChange={(e) => setActive(e.target.value)}
               className="w-full p-2 mb-4 border rounded"
             >
-              <option value={true}>Publish</option>
-              <option value={false}>Hidden</option>
+              <option value={true}>Hiển thị</option>
+              <option value={false}>Ẩn</option>
             </select>
           </div>
         </div>

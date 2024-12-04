@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Pagination from "../../../../utils/Pagination";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsisVertical, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { searchProduct } from "../../../../services/apiProduct";
-import Loading from "../../../../utils/Loading";
 import { formatNumber } from "../../../../utils/format";
 import { getCategoriesTree } from "../../../../services/apiCategory";
+import TablePagination from "@mui/material/TablePagination";
 
 function categorySelect(categories, depth = 0) {
   return categories.map((category, index) => (
@@ -22,8 +21,8 @@ function categorySelect(categories, depth = 0) {
 
 function ProductList() {
   const [productList, setProductList] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [pageDetail, setPageDetail] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [active, setActive] = useState(-1);
@@ -50,11 +49,12 @@ function ProductList() {
       try {
         const params = {
           search: searchValue,
-          pageNumber,
+          pageNumber: pageNumber + 1,
           pageSize,
           active,
           inStock,
           category: categoryId,
+          sortField: "id_desc",
         };
         console.log(params);
         const response = await searchProduct(params);
@@ -71,26 +71,19 @@ function ProductList() {
     search();
   }, [searchValue, pageNumber, pageSize, active, inStock, categoryId]);
 
-  function handleChangePageSize(e) {
-    setPageSize(Number(e.target.value));
-  }
+  const handleChangePage = (event, newPage) => {
+    setPageNumber(newPage);
+  };
 
-  function handleDecreasePageNum() {
-    if (pageNumber > 1) {
-      setPageNumber((pageNumber) => pageNumber - 1);
-    }
-  }
-
-  function handleIncreasePageNum() {
-    if (pageNumber < pageDetail.totalPages) {
-      setPageNumber((pageNumber) => pageNumber + 1);
-    }
-  }
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNumber(0);
+  };
 
   return (
     <div className="p-2">
       <div className="bg-white p-4 rounded-lg shadow-md">
-        <h1 className="text-2xl font-semibold mb-6">Product List</h1>
+        <h1 className="text-2xl font-semibold mb-6">Danh sách sản phẩm</h1>
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-4">
             <select
@@ -98,16 +91,16 @@ function ProductList() {
               onChange={(e) => setActive(Number(e.target.value))}
               className="border border-gray-300 rounded-lg p-2"
             >
-              <option value={-1}>Status</option>
-              <option value={1}>Publish</option>
-              <option value={0}>Hidden</option>
+              <option value={-1}>Trạng thái</option>
+              <option value={1}>Hiển thị</option>
+              <option value={0}>Ẩn</option>
             </select>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(Number(e.target.value))}
               className="border border-gray-300 rounded-lg p-2 w-60"
             >
-              <option value={0}>Category</option>
+              <option value={0}>Danh mục</option>
               {categorySelect(categories)}
             </select>
             <select
@@ -115,39 +108,46 @@ function ProductList() {
               onChange={(e) => setInStock(Number(e.target.value))}
               className="border border-gray-300 rounded-lg p-2"
             >
-              <option value={-1}>Stock</option>
-              <option value={1}>In Stock</option>
-              <option value={0}>Out of Stock</option>
+              <option value={-1}>Số lượng</option>
+              <option value={1}>Còn hàng</option>
+              <option value={0}>Hết hàng</option>
             </select>
           </div>
           <div className="flex space-x-4">
             <input
               type="text"
-              placeholder="Search Product Name, SKU"
+              placeholder="Tìm kiếm tên sản phẩm, mã SKU"
               className="border border-gray-300 rounded-lg p-2 w-72"
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                setPageNumber(0);
+              }}
             />
             <Link
               to={"/admin/product/add"}
               className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-yellow-400/80"
             >
-              <FontAwesomeIcon icon={faPlus} /> Add Product
+              <FontAwesomeIcon icon={faPlus} /> Thêm sản phẩm
             </Link>
           </div>
         </div>
-        {productList ? (
+        {productList.length > 0 ? (
           <>
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
-                  <th className="py-2 px-4 border-b text-center">PRODUCT</th>
-                  <th className="py-2 px-4 border-b text-center">CATEGORY</th>
-                  <th className="py-2 px-4 border-b text-center">STOCK</th>
-                  <th className="py-2 px-4 border-b text-center">COST</th>
-                  <th className="py-2 px-4 border-b text-center">QTY</th>
-                  <th className="py-2 px-4 border-b text-center">STATUS</th>
-                  <th className="py-2 px-4 border-b text-center">ACTIONS</th>
+                  <th className="py-2 px-4 border-b text-center">
+                    TÊN SẢN PHẨM
+                  </th>
+                  <th className="py-2 px-4 border-b text-center">DANH MỤC</th>
+                  <th className="py-2 px-4 border-b text-center">
+                    TÌNH TRẠNG KHO
+                  </th>
+                  <th className="py-2 px-4 border-b text-center">GIÁ BÁN</th>
+                  <th className="py-2 px-4 border-b text-center">SỐ LƯỢNG</th>
+                  <th className="py-2 px-4 border-b text-center">TRẠNG THÁI</th>
+                  <th className="py-2 px-4 border-b text-center">TÙY CHỌN</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,12 +186,14 @@ function ProductList() {
                         }`}
                       >
                         <p className="text-xs">
-                          {product.inStock ? "In Stock" : "Out of Stock"}
+                          {product.inStock ? "Còn hàng" : "Hết hàng"}
                         </p>
                       </span>
                     </td>
-                    <td className="py-2 px-4 text-right right-1">
-                      <p> {formatNumber(product.cost)} đ</p>
+                    <td className="py-2 px-4 text-right text-sm right-1">
+                      <p className="whitespace-nowrap">
+                        {formatNumber(product.cost)} đ
+                      </p>
                     </td>
                     <td className="py-2 px-4 text-center">{product.stock}</td>
                     <td className="py-2 px-4 text-center">
@@ -202,7 +204,7 @@ function ProductList() {
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {product.active ? "Publish" : "Hidden"}
+                        {product.active ? "Hiển thị" : "Ẩn"}
                       </span>
                     </td>
                     <td className="py-2 px-4 text-center space-x-2">
@@ -225,17 +227,21 @@ function ProductList() {
                 ))}
               </tbody>
             </table>
-            <Pagination
-              pageSize={pageSize}
-              totalElements={pageDetail?.totalElements}
-              handleIncPage={handleIncreasePageNum}
-              handleDecPage={handleDecreasePageNum}
-              handleChangePageSize={handleChangePageSize}
-            />
           </>
         ) : (
-          <Loading />
+          <div className="italic text-center">
+            Không tìm thấy danh sách sản phẩm phù hợp
+          </div>
         )}
+        <TablePagination
+          component="div"
+          count={pageDetail?.totalElements}
+          page={pageNumber}
+          onPageChange={handleChangePage}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          color="primary"
+        />
       </div>
     </div>
   );

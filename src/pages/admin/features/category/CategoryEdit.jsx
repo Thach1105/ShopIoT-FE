@@ -93,12 +93,12 @@ function CategoryEdit() {
     category && (
       <div className="max-w-full mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">{`Categories Edit`}</h1>
+          <h1 className="text-2xl font-bold">Chỉnh sửa danh mục sản phẩm</h1>
           <button
             className="bg-purple-500 text-white px-4 py-2 rounded"
             onClick={handleSave}
           >
-            Submit
+            Lưu
           </button>
         </div>
 
@@ -106,7 +106,9 @@ function CategoryEdit() {
           {/* Visibility Status */}
           <div className="bg-white p-6 rounded-lg shadow-md col-span-1">
             <>
-              <h2 className="text-lg font-semibold mb-4">Visibility Status</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                Trạng thái hiển thị
+              </h2>
               <div className="flex flex-col space-y-2">
                 <label className="flex items-center">
                   <input
@@ -117,7 +119,7 @@ function CategoryEdit() {
                     onChange={(e) => setEnabled(e.target.value)}
                     defaultChecked={enabled}
                   />
-                  Published
+                  Hiển thị
                 </label>
                 <label className="flex items-center">
                   <input
@@ -128,7 +130,7 @@ function CategoryEdit() {
                     onChange={(e) => setEnabled(e.target.value)}
                     defaultChecked={!enabled}
                   />
-                  Hidden
+                  Ẩn
                 </label>
               </div>
             </>
@@ -136,7 +138,7 @@ function CategoryEdit() {
             <>
               <div className="my-4">
                 <label className="text-lg font-semibold mb-4">
-                  Category Parent
+                  Danh mục cha
                 </label>
                 <select
                   value={parentId}
@@ -144,7 +146,7 @@ function CategoryEdit() {
                   className="w-full p-2 border rounded"
                 >
                   <option className="text-xs" value={0}>
-                    --- No Parent ---
+                    --- Không có ---
                   </option>
                   <CategoryOptions
                     categories={categories}
@@ -157,14 +159,16 @@ function CategoryEdit() {
 
           {/* Basic information */}
           <div className="bg-white p-6 rounded-lg shadow-md col-span-2">
-            <h2 className="text-lg font-semibold mb-4 ">Basic information</h2>
+            <h2 className="text-lg font-semibold mb-4 ">Thông tin cơ bản</h2>
             <div className="text-sm font-medium mb-4">{`ID: #${categoryId.padStart(
               4,
               "0"
             )}`}</div>
             <div className="grid grid-cols-1  gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Tên danh mục
+                </label>
                 <input
                   type="text"
                   className="w-full border rounded px-3 py-2"
@@ -176,7 +180,7 @@ function CategoryEdit() {
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium mb-1">
-                Category Identifier URL
+                Đường dẫn của danh mục
               </label>
               <div className="flex">
                 <span className="bg-gray-200 border border-r-0 rounded-l px-3 py-2">
@@ -192,9 +196,7 @@ function CategoryEdit() {
               </div>
             </div>
             <div className="mt-4">
-              <p className="block text-sm font-medium mb-1">
-                Category Description
-              </p>
+              <p className="block text-sm font-medium mb-1">Mô tả</p>
               <TextEditor text={description} setText={setDescription} />
             </div>
           </div>

@@ -13,4 +13,8 @@ export default defineConfig({
       external: ["react-quill/dist/quill.snow.css"],
     },
   },
+
+  optimizeDeps: {
+    include: ["react-quill"],
+  },
 });

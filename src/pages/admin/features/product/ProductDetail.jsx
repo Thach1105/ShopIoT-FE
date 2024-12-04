@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { formatDateTime, formatNumber } from "../../../../utils/format";
+// import ReactQuill from "react-quill";
 // import "react-quill/dist/quill.snow.css";
 import loadable from "@loadable/component";
 import { getOverallReviews, getReviews } from "../../../../services/apiReview";
@@ -272,7 +273,11 @@ function Reviews({ productId }) {
   );
 }
 
-const ReactQuill = loadable(() => import("react-quill"));
+const ReactQuill = loadable(() => import("react-quill"), {
+  ssr: false, // Đảm bảo không render phía server
+  fallback: <div>Loading Editor...</div>,
+});
+import "react-quill/dist/quill.snow.css";
 // eslint-disable-next-line react/prop-types
 function Descriptions({ description }) {
   const modules = {

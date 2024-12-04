@@ -48,7 +48,6 @@ function CategoryPage() {
   const [maxPrice, setMaxPrice] = useState(
     Number(searchParams.get("price")?.split("-")[1]) || 100000000
   );
-  console.log(breadCrumbs);
 
   useEffect(() => {
     if (!state) {
@@ -67,7 +66,6 @@ function CategoryPage() {
     async function callBreadCrumbFunc() {
       if (category?.id) {
         const breadCrumb = await buildBreadcrumb(category.id);
-        console.log("result func:", breadCrumb);
         setBreadCrumbs(breadCrumb);
       }
     }

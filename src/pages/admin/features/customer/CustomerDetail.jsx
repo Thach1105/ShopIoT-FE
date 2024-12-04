@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getOrdersByUserId } from "../../../../services/apiOrder";
 import { getUserById } from "../../../../services/apiCustomer";
-import Pagination from "../../../../utils/Pagination";
-import { formatDateTime } from "../../../../utils/format";
+import TablePagination from "@mui/material/TablePagination";
+import { formatDateTime, formatNumber } from "../../../../utils/format";
 
 function CustomerDetail() {
   const { customerId } = useParams();
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
   const [pageDetail, setPageDetail] = useState(null);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
@@ -31,7 +31,11 @@ function CustomerDetail() {
   useEffect(() => {
     async function fetchDataOrder() {
       try {
-        const response = await getOrdersByUserId(customerId, pageNum, pageSize);
+        const response = await getOrdersByUserId(
+          customerId,
+          pageNum + 1,
+          pageSize
+        );
         const { data } = response;
         setOrders(data?.content);
         setPageDetail(data?.pageDetails);
@@ -44,104 +48,82 @@ function CustomerDetail() {
     fetchDataOrder();
   }, [customerId, pageNum, pageSize]);
 
-  function handleIncPageNum() {
-    if (pageNum < pageDetail.totalPages) {
-      setPageNum(pageNum + 1);
-    }
-  }
+  const handleChangePage = (event, newPage) => {
+    setPageNum(newPage);
+  };
 
-  function handleDecPageNum() {
-    if (pageNum > 1) {
-      setPageNum(pageNum - 1);
-    }
-  }
-
-  function handlePageSize(e) {
-    setPageSize(Number(e.target.value));
-  }
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNum(0);
+  };
 
   return (
     customer && (
       <div className="p-8 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Customer Detail</h1>
+        <h1 className="text-3xl font-bold mb-6">THÔNG TIN KHÁCHH HÀNG</h1>
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">Account</h2>
+            <h2 className="text-xl font-bold mb-4">TÀI KHOẢN</h2>
             <p className="mb-2">
-              <span className="font-bold">Username:</span> {customer.username}
+              <span className="font-bold">Tên đăng nhập:</span>{" "}
+              {customer.username}
             </p>
             <p className="mb-2">
-              <span className="font-bold">Fullname: </span> {customer.fullName}
+              <span className="font-bold">Họ và tên: </span> {customer.fullName}
             </p>
             <p className="mb-2">
               <span className="font-bold">Email: </span> {customer.email}
             </p>
             <p className="mb-2">
-              <span className="font-bold">Phone: </span> {customer.phoneNumber}
+              <span className="font-bold">Số điện thoại: </span>{" "}
+              {customer.phoneNumber}
             </p>
           </div>
-          {/* <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-bold mb-4">Billing Address</h2>
-          <p className="mb-2">
-            <span className="font-bold">Block Number:</span> A-510
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Address:</span> 81 Fulton London
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Pincode:</span> 385467
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Phone:</span> 202-458-4568
-          </p>
-        </div> */}
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-bold mb-4">Customer Order</h2>
+          <h2 className="text-xl font-bold mb-4">ĐƠN HÀNG</h2>
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 text-left">INDEX</th>
-                <th className="py-2 text-left">ORDER CODE</th>
-                <th className="py-2 text-left">ORDER STATUS</th>
-                <th className="py-2 text-left">PAYMENT INFO</th>
-                <th className="py-2 text-left">ORDER DATE</th>
-                <th className="py-2 text-left">PRICE</th>
+                <th className="py-2 text-left">STT</th>
+                <th className="py-2 text-left">MÃ ĐƠN HÀNG</th>
+                <th className="py-2 text-left">TRẠNG THÁI ĐƠN</th>
+                <th className="py-2 text-left">KIỂU THANH TOÁN</th>
+                <th className="py-2 text-left">NGÀY TẠO ĐƠN</th>
+                <th className="py-2 text-left">TỔNG TIỀN</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => (
                 <tr key={index}>
-                  <td className="py-2">#{index + 1}</td>
+                  <td className="py-2">{index + 1}</td>
                   <td className="py-2 flex items-center">
-                    {/* <img
-                    src="https://placehold.co/50x50"
-                    alt="Note Diaries"
-                    className="w-12 h-12 mr-4"
-                  /> */}
-                    <Link>
+                    <Link to={`/admin/order-code/${order.orderCode}`}>
                       <p className="text-gray-900 whitespace-no-wrap hover:text-yellow-500">
                         {order.orderCode}
                       </p>
                     </Link>
                   </td>
                   <td className="py-2">{order.orderStatus}</td>
-                  <td className="py-2">{order.paymentType}</td>
+                  <td className="py-2 items-center">{order.paymentType}</td>
                   <td className="py-2">{formatDateTime(order.orderTime)}</td>
-                  <td className="py-2">{`${order.totalPrice} VND`}</td>
+                  <td className="py-2">{`${formatNumber(
+                    order.totalPrice
+                  )} đ`}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           {pageDetail && (
-            <Pagination
-              handleDecPage={handleDecPageNum}
-              handleIncPage={handleIncPageNum}
-              totalElements={pageDetail.totalElements}
-              pageSize={pageSize}
-              handleChangePageSize={handlePageSize}
+            <TablePagination
+              component="div"
+              count={pageDetail.totalElements}
+              page={pageNum}
+              onPageChange={handleChangePage}
+              rowsPerPage={pageSize}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           )}
         </div>

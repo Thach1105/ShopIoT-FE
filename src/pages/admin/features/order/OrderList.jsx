@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Pagination from "../../../../utils/Pagination";
+import TablePagination from "@mui/material/TablePagination";
 import OrderRow from "./OrderRow";
 import {
   getAllOrder,
@@ -10,7 +10,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 function OrderList() {
   const [orders, setOrders] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageDetail, setPageDetail] = useState(null);
   const [search, setSearch] = useState("");
@@ -18,7 +18,7 @@ function OrderList() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const { data } = await getAllOrder(pageNum, pageSize);
+        const { data } = await getAllOrder(pageNum + 1, pageSize);
         console.log(data);
         setOrders(data?.content);
         setPageDetail(data?.pageDetails);
@@ -30,21 +30,14 @@ function OrderList() {
     if (!search) fetchOrders();
   }, [pageNum, pageSize, search]);
 
-  function handleChangePageSize(e) {
-    setPageSize(Number(e.target.value));
-  }
+  const handleChangePage = (event, newPage) => {
+    setPageNum(newPage);
+  };
 
-  function handleDecreasePageNum() {
-    if (pageNum > 1) {
-      setPageNum((pageNumber) => pageNumber - 1);
-    }
-  }
-
-  function handleIncreasePageNum() {
-    if (pageNum < pageDetail.totalPages) {
-      setPageNum((pageNumber) => pageNumber + 1);
-    }
-  }
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNum(0);
+  };
 
   async function handleSearch() {
     try {
@@ -63,14 +56,14 @@ function OrderList() {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between m-4">
-        <h1 className="text-2xl font-bold mb-4">Orders List</h1>
+        <h1 className="text-2xl font-bold mb-4">Quản lý đơn hàng</h1>
         <div className="relative">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value.toUpperCase())}
-            placeholder="Search Order Code"
-            className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none"
+            placeholder="Tìm mã đơn hàng"
+            className="p-2 pl-2 rounded-full border border-gray-300 focus:outline-none"
           />
           <button
             className="bg-gray-500 p-2 rounded-xl ml-1"
@@ -86,41 +79,47 @@ function OrderList() {
           <thead>
             <tr>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Order Code
+                Mã đơn hàng
               </th>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Create Time
+                Thời gian tạo
               </th>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Customers Name
+                Tên khách hàng
               </th>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Payment Info
+                Phương thức thanh toán
               </th>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
+                Tổng tiền
               </th>
               <th className="py-2 px-6 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                Trạng thái đơn
               </th>
             </tr>
           </thead>
-          <tbody>
-            {orders.length === 0 ? (
-              <tr className="border-b text-sm text-center">No order</tr>
-            ) : (
-              orders.map((order) => <OrderRow key={order.id} order={order} />)
-            )}
-          </tbody>
+
+          {orders.length === 0 ? (
+            <div className=" border-b w-full text-center">
+              <p className="py-3 italic">No order</p>
+            </div>
+          ) : (
+            <tbody>
+              {orders.map((order) => (
+                <OrderRow key={order.id} order={order} />
+              ))}
+            </tbody>
+          )}
         </table>
 
         {pageDetail && (
-          <Pagination
-            totalElements={pageDetail?.totalElements}
-            pageSize={pageSize}
-            handleChangePageSize={handleChangePageSize}
-            handleDecPage={handleDecreasePageNum}
-            handleIncPage={handleIncreasePageNum}
+          <TablePagination
+            component="div"
+            count={pageDetail?.totalElements}
+            page={pageNum}
+            onPageChange={handleChangePage}
+            rowsPerPage={pageSize}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         )}
       </div>

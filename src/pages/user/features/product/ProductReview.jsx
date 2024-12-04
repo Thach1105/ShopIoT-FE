@@ -105,12 +105,12 @@ function ProductReview({ productId }) {
       )}
 
       {/* Phần đánh giá */}
-      <div className="text-center mb-8">
+      {/* <div className="text-center mb-8">
         <p className="mb-4">Bạn đánh giá sao về sản phẩm này?</p>
         <button className="bg-red-600 text-white px-6 py-2 rounded-md">
           Đánh giá ngay
         </button>
-      </div>
+      </div> */}
 
       {/* Bộ lọc */}
       <div className="mb-8">

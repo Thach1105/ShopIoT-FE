@@ -68,6 +68,14 @@ export async function getProducts(pageNumber, pageSize) {
   return response;
 }
 
+export async function getPopularProduct(pageSize) {
+  const response = await axios.get(
+    `${url}/products?size=${pageSize}&page=1&sortBy=rating&order=desc`
+  );
+
+  return response;
+}
+
 export async function getSingleProduct(productId) {
   const requestURL = `${url}/products/${productId}`;
   const response = await axiosInstance.get(requestURL);
@@ -75,7 +83,8 @@ export async function getSingleProduct(productId) {
 }
 
 export async function searchProduct(params) {
-  const { pageNumber, pageSize, search, active, inStock, category } = params;
+  const { pageNumber, pageSize, search, active, inStock, category, sortField } =
+    params;
 
   const requestURL = `${url}/products/search?size=${pageSize}&page=${pageNumber}&q=${search}${
     active === 1 ? `&active=${true}` : active === 0 ? `&active=${false}` : ""
@@ -85,7 +94,7 @@ export async function searchProduct(params) {
       : inStock === 0
       ? `&inStock=${false}`
       : ""
-  }${category > 0 ? `&category=${category}` : ""}`;
+  }${category > 0 ? `&category=${category}` : ""}&sortField=${sortField}`;
   const response = await axiosInstance.get(requestURL);
 
   return response;

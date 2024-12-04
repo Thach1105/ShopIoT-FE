@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "../configs/config";
+import axiosInstance from "../configs/axiosInstance";
 
 const url = config.url_Backend;
 
@@ -14,6 +15,14 @@ export async function getReviews(productId, number, size, rating) {
 
 export async function getOverallReviews(productId) {
   const response = await axios.get(`${url}/reviews/overall/${productId}`);
+
+  return response;
+}
+
+export async function getMyReviewForProduct(productId) {
+  const response = await axiosInstance.get(
+    `/reviews/forProductByUser/${productId}`
+  );
 
   return response;
 }

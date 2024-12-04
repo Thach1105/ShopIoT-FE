@@ -22,13 +22,13 @@ function BrandList() {
           setOpen={setEditModal}
         />
       )}
-      <h1 className="text-3xl font-bold mb-4">Brands</h1>
+      <h1 className="text-3xl font-bold mb-4">Quản lý Thương hiệu</h1>
       <div className="items-center mb-4">
         <button
           onClick={() => setAddModal(true)}
           className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          <FontAwesomeIcon icon={faPlus} /> Add New Brand
+          <FontAwesomeIcon icon={faPlus} /> Thêm thương hiệu mới
         </button>
       </div>
       <div className="flex flex-col justify-around items-center">
@@ -52,7 +52,7 @@ function BrandList() {
                   }}
                   className="bg-purple-500 text-white px-4 py-2 rounded mt-2"
                 >
-                  <FontAwesomeIcon icon={faPenToSquare} /> Edit
+                  <FontAwesomeIcon icon={faPenToSquare} /> Chỉnh sửa
                 </button>
               </div>
             </div>

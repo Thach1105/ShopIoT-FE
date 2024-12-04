@@ -39,14 +39,14 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none bg-gray-400/45">
       <div className="bg-white p-6 rounded shadow-md w-1/2 relative ">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Edit Customers</h2>
+          <h2 className="text-xl font-bold">CHỈNH SỬA NGƯỜI DÙNG</h2>
           <button className="text-gray-500 p-2" onClick={onClose}>
             <FontAwesomeIcon icon={faX} />
           </button>
         </div>
         <form onSubmit={handleUpdateUser}>
           <div className="mb-4">
-            <label className="block text-gray-700">Customers Name</label>
+            <label className="block text-gray-700">Họ và tên</label>
             <input
               type="text"
               className="w-full p-2 border rounded"
@@ -60,7 +60,7 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
       </div> */}
           <div className="mb-4 flex">
             <div className="w-1/2 mr-2">
-              <label className="block text-gray-700">Customer Id</label>
+              <label className="block text-gray-700">ID</label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -69,7 +69,7 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
               />
             </div>
             <div className="w-1/2 ml-2">
-              <label className="block text-gray-700">Date of Birth</label>
+              <label className="block text-gray-700">Ngày sinh</label>
               <input
                 type="date"
                 className="w-full p-2 border rounded"
@@ -80,7 +80,7 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
           </div>
           <div className="mb-4 flex">
             <div className="w-1/2 mr-2">
-              <label className="block text-gray-700">Mail</label>
+              <label className="block text-gray-700">Email</label>
               <input
                 type="email"
                 className="w-full p-2 border rounded"
@@ -89,7 +89,7 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
               />
             </div>
             <div className="w-1/2 ml-2">
-              <label className="block text-gray-700">Phone</label>
+              <label className="block text-gray-700">Số điện thoại</label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -107,7 +107,7 @@ function EditCustomerForm({ customer, onClose, setUsers }) {
               type="submit"
               className="bg-purple-600 text-white px-4 py-2 rounded"
             >
-              Save
+              Lưu
             </button>
           </div>
         </form>

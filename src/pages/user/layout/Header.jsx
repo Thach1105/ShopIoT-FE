@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { faCircleUser, faFileLines } from "@fortawesome/free-regular-svg-icons";
 import {
   faBars,
@@ -12,8 +13,12 @@ import { jwtDecode } from "jwt-decode";
 import { getCategoriesTree } from "../../../services/apiCategory";
 import { searchForCustomer } from "../../../services/apiProduct";
 import { logout } from "../../../services/authentication";
+import { formatNumber } from "../../../utils/format";
+import { useUserState } from "../../../provider/UserContext";
 
 function Header() {
+  const { cart } = useUserState();
+  const cartItems = cart?.products || [];
   const { token, setToken } = useAuth();
   const [userInfo, setUserInfo] = useState({});
   const [search, setSearch] = useState("");
@@ -22,6 +27,8 @@ function Header() {
   const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState();
   const [resultSearch, setResultSearch] = useState([]);
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -63,13 +70,13 @@ function Header() {
   }, [search]);
 
   return (
-    <header className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white divide-y-2 divide-stone-300">
+    <header className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-white divide-y-2 divide-stone-300">
       <div className="container mx-auto flex items-center justify-between py-4 w-4/5">
         <Link to={"/"} className="flex items-center cursor-pointer">
           <img
-            src="https://placehold.co/120x80"
+            src="/Logo-ShopIoT.webp"
             alt="Shop IoT"
-            className="mr-2 rounded-xl"
+            className="mr-2 rounded-xl h-20"
           />
           <h1 className="text-3xl font-bold">Shop IoT</h1>
         </Link>
@@ -125,12 +132,15 @@ function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Đăng nhập hoặc tài khoản người dùng */}
+          <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faCircleUser} size="xl" />
             {token ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 hover:text-blue-200 py-2 px-3 rounded-lg">
-                  <span className="font-semibold">{userInfo.username}</span>
+                  <span className="text-sm font-semibold">
+                    {userInfo.fullName}
+                  </span>
                   <svg
                     className="w-4 h-4 transition-transform group-hover:rotate-180"
                     fill="none"
@@ -163,8 +173,8 @@ function Header() {
                     <hr className="my-1" />
                     <Link
                       onClick={() => {
-                        logout();
                         setToken();
+                        logout();
                       }}
                       to={"/"}
                       className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer"
@@ -185,10 +195,58 @@ function Header() {
             )}
           </div>
 
-          <Link to={"/gio-hang"} className="flex items-center">
-            <FontAwesomeIcon icon={faCartShopping} size="xl" />
-            <span className="ml-1 bg-blue-600 rounded-full px-2">0</span>
-          </Link>
+          {/* Giỏ hàng */}
+          <div
+            className="relative group"
+            onMouseEnter={() => setIsCartOpen(true)}
+            //onMouseLeave={() => setIsCartOpen(false)}
+          >
+            <Link to={"/gio-hang"} className="flex items-center">
+              <FontAwesomeIcon icon={faCartShopping} size="xl" />
+              <span className="ml-1 bg-blue-600 rounded-full px-2">
+                {cart?.cartSummary?.totalQuantity}
+              </span>
+            </Link>
+
+            {isCartOpen && ( // Hiển thị giỏ hàng khi di chuột vào
+              <div
+                //onMouseEnter={() => setIsCartOpen(true)}
+                onMouseLeave={() => setIsCartOpen(false)}
+                //className="w-96 absolute right-0 mt-2 bg-white text-black shadow-lg rounded-md p-4 flex flex-col z-[51] divide-y-2"
+                className="absolute right-0 mt-1 w-96  group-hover:visible invisible bg-white text-black p-2  transition-all duration-100 z-[51]"
+              >
+                <p className="font-semibold border-b-2 mb-1">
+                  Sản phẩm mới thêm
+                </p>
+                <div className="divide-y-2 h-60 overflow-y-scroll pr-2 border-b-2">
+                  {cartItems.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center my-1 "
+                    >
+                      <div className="flex gap-1">
+                        <img className="w-12 h-12" src={item.image} />
+                        <p className="text-xs ">{item.name}</p>
+                      </div>
+                      <div className="items-center">
+                        <p className="text-xs font-semibold text-red-600 whitespace-nowrap">
+                          {formatNumber(item.total)} ₫
+                        </p>
+                        <p className="text-xs text-right">x{item.quantity}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  to="/gio-hang"
+                  className="block text-center bg-red-500 text-white rounded py-2 mt-2 hover:bg-red-700"
+                >
+                  Xem giỏ hàng
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -214,7 +272,7 @@ function Header() {
                   setIsProductMenuOpen(false);
                   setCategorySelected();
                 }}
-                className="absolute top-full left-0 bg-white text-stone-500 w-full shadow-lg rounded-sm z-10 flex overflow-auto"
+                className="absolute top-full left-0 bg-white text-stone-900 w-full shadow-lg rounded-sm z-10 flex overflow-auto"
               >
                 <div className="bg-white w-1/5 px-2">
                   <div className="flex flex-col p-2 space-y-2">
@@ -243,7 +301,7 @@ function Header() {
                             to={`/danh-muc/${child.slug}`}
                             state={child}
                             key={index}
-                            className="text-stone-500 text-center py-2 font-normal hover:underline hover:text-blue-500 hover:italic"
+                            className="text-stone-800 text-center py-2 font-normal hover:underline hover:text-blue-500 hover:italic"
                           >
                             {child.name}
                           </Link>
@@ -268,7 +326,7 @@ function Header() {
             <p className="text-center">Giải pháp</p>
 
             {isSolutionMenuOpen && (
-              <div className="absolute top-full left-0 bg-white text-stone-500 w-full shadow-lg rounded-sm z-10">
+              <div className="absolute top-full left-0 bg-white text-stone-900 w-full shadow-lg rounded-sm z-10">
                 <div className="flex flex-col p-3 space-y-2">
                   <Link className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer">
                     Giải pháp
@@ -285,6 +343,9 @@ function Header() {
                 </div>
               </div>
             )}
+          </div>
+          <div className="font-semibold cursor-pointer p-2 w-1/4 hover:bg-teal-400">
+            <p className="text-center">Sản phẩm mới</p>
           </div>
         </div>
       </div>

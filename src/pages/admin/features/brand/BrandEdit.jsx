@@ -65,7 +65,9 @@ function BrandEdit({ brand, open, setOpen }) {
               </div>
               <form>
                 <div className="mb-4">
-                  <label className="block text-gray-700 mb-1">Brand Name</label>
+                  <label className="block text-gray-700 mb-1">
+                    Tên Thương hiệu
+                  </label>
                   <input
                     type="text"
                     className="w-full px-3 py-2 border rounded"
@@ -75,7 +77,9 @@ function BrandEdit({ brand, open, setOpen }) {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-gray-700 mb-1">Logo</label>
+                  <label className="block text-gray-700 mb-1">
+                    Logo thương hiệu
+                  </label>
                   {logo ? (
                     <div className="flex flex-col items-center">
                       <img
@@ -113,7 +117,7 @@ function BrandEdit({ brand, open, setOpen }) {
                     type="submit"
                     className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-green-600 hover:font-semibold"
                   >
-                    Save
+                    Lưu
                   </button>
                 </div>
               </form>

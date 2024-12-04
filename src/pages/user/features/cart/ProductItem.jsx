@@ -7,8 +7,10 @@ import {
   changeProductQuantityInCart,
   deleteProductFormCart,
 } from "../../../../services/apiCart";
+import { useUserState } from "../../../../provider/UserContext";
 
 function ProductItem({ product, cartId, handleChangeCart }) {
+  const { setChangedCart } = useUserState();
   const [quantity, setQuantity] = useState(product.quantity || 1);
 
   const handleChangeQuantity = async (quantityChange) => {
@@ -21,11 +23,13 @@ function ProductItem({ product, cartId, handleChangeCart }) {
     };
 
     await changeProductQuantityInCart(cartId, reqBody);
+    setChangedCart(true);
     handleChangeCart(true);
   };
 
   const handleDeleteProduct = async (productId) => {
     await deleteProductFormCart(productId);
+    setChangedCart(true);
     handleChangeCart(true);
   };
 
@@ -61,7 +65,7 @@ function ProductItem({ product, cartId, handleChangeCart }) {
           onClick={() => handleDeleteProduct(product.id)}
           className="text-gray-400"
         >
-          <FontAwesomeIcon icon={faTrash} />
+          <FontAwesomeIcon className="hover:text-red-600" icon={faTrash} />
         </button>
       </div>
     </div>

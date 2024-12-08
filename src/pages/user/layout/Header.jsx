@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../../provider/authProvider";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import { getCategoriesTree } from "../../../services/apiCategory";
 import { searchForCustomer } from "../../../services/apiProduct";
 import { logout } from "../../../services/authentication";
@@ -17,11 +17,11 @@ import { formatNumber } from "../../../utils/format";
 import { useUserState } from "../../../provider/UserContext";
 
 function Header() {
-  const { cart } = useUserState();
+  const { cart, userInfo } = useUserState();
 
   const cartItems = cart?.products || [];
   const { token, setToken } = useAuth();
-  const [userInfo, setUserInfo] = useState({});
+  //const [userInfo, setUserInfo] = useState({});
   const [search, setSearch] = useState("");
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
   const [isSolutionMenuOpen, setIsSolutionMenuOpen] = useState(false);
@@ -31,14 +31,14 @@ function Header() {
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  useEffect(() => {
-    if (token) {
-      const decode = jwtDecode(token);
-      const { data } = decode;
+  // useEffect(() => {
+  //   if (token) {
+  //     const decode = jwtDecode(token);
+  //     const { data } = decode;
 
-      setUserInfo(data);
-    }
-  }, [token]);
+  //     setUserInfo(data);
+  //   }
+  // }, [token]);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -72,7 +72,7 @@ function Header() {
   }, [search]);
 
   return (
-    <header className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-white divide-y-2 divide-stone-300">
+    <header className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-blue-500 to-90% text-white divide-y-2 divide-stone-300">
       <div className="container mx-auto flex items-center justify-between py-4 w-4/5">
         <Link to={"/"} className="flex items-center cursor-pointer">
           <img

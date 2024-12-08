@@ -51,12 +51,10 @@ const displayStatusOrder = (status) => {
 function OrderInformation({ order, setOrder }) {
   const { orderDetail } = order;
   const navigate = useNavigate();
-  console.log(order);
 
   const [err, setErr] = useState();
   const [selectedProductRv, setSelectedProductRV] = useState();
 
-  console.log(selectedProductRv);
   const totalPriceItems = orderDetail.reduce(
     (total, item) => total + item.totalPrice,
     0
@@ -75,7 +73,6 @@ function OrderInformation({ order, setOrder }) {
   const handleCancelOrder = async () => {
     try {
       const response = await cancelOrder(order.orderCode);
-      console.log(response);
       const { data } = response;
       const { content } = data;
 
@@ -103,7 +100,6 @@ function OrderInformation({ order, setOrder }) {
       const response = await paymentByVNPAY(order.orderCode);
       const { data } = response;
       const paymentURL = data?.content;
-      console.log(response);
       window.location.href = paymentURL;
     } catch (error) {
       const { response } = error;
@@ -134,7 +130,6 @@ function OrderInformation({ order, setOrder }) {
         };
         setErr(err);
       }
-      console.log(response);
     } catch (error) {
       const { response } = error;
       const { data } = response;
@@ -262,13 +257,16 @@ function OrderInformation({ order, setOrder }) {
                         {item.product.sku}
                       </p>
                       <div className="flex gap-2 mt-2">
-                        <Button
-                          onClick={() => setSelectedProductRV(item.product)}
-                          size="small"
-                          variant="outlined"
-                        >
-                          Đánh giá
-                        </Button>
+                        {order.orderStatus === "DELIVERED" && (
+                          <Button
+                            onClick={() => setSelectedProductRV(item.product)}
+                            size="small"
+                            variant="outlined"
+                          >
+                            Đánh giá
+                          </Button>
+                        )}
+
                         {/* <Button size="small" variant="outlined">
                           Mua lại
                         </Button> */}

@@ -24,7 +24,11 @@ function ProductList({ products }) {
             state={product}
             className="cursor-pointer"
           >
-            <img src={product.image_url} alt="Product Image" className="mb-2" />
+            <img
+              src={product.image_url}
+              alt="Product Image"
+              className="mb-2 h-72 w-fit"
+            />
           </Link>
           <h2 className="text-red-500 font-bold text-lg mb-1">
             {formatNumber(product.cost)} đ

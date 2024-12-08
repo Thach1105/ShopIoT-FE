@@ -29,7 +29,7 @@ function ProductDetail() {
 
   return (
     <div className="container mx-auto p-2">
-      <h1 className="text-2xl font-bold mb-4">Products Detail</h1>
+      <h1 className="text-2xl font-bold mb-4">Chi tiết sản phẩm</h1>
       <div className="bg-white p-4 rounded-lg shadow-lg flex-col mb-6">
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-1">
@@ -50,7 +50,7 @@ function ProductDetail() {
                 href="#review"
                 className="ml-2 text-sm text-gray-500"
               >
-                VIEW ALL REVIEWS
+                Xem tất cả đánh giá
               </a>
             </div>
             <div className="flex items-center mt-4">
@@ -89,9 +89,9 @@ function ProductDetail() {
         variant="contained"
         aria-label="Basic button group"
       >
-        <Button onClick={() => setBtnValue(1)}>Reviews</Button>
-        <Button onClick={() => setBtnValue(2)}>Descriptions</Button>
-        <Button onClick={() => setBtnValue(3)}>Specifications</Button>
+        <Button onClick={() => setBtnValue(1)}>Đánh giá</Button>
+        <Button onClick={() => setBtnValue(2)}>Mô tả</Button>
+        <Button onClick={() => setBtnValue(3)}>Thông số kỹ thuật</Button>
       </ButtonGroup>
 
       {btnValue === 1 ? (
@@ -328,7 +328,7 @@ function Specifications({ options }) {
     <div className="justify-center items-center py-4">
       <div className="bg-white rounded-lg shadow-md p-6 flex-1 ">
         <h2 className="text-lg font-bold mb-4 underline">
-          Product Specifications
+          Thông số kỹ thuật sản phẩm
         </h2>
         <div className="space-y-2">
           {/*  eslint-disable-next-line react/prop-types */}

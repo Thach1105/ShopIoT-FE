@@ -7,10 +7,13 @@ import Alert from "@mui/material/Alert";
 import { useAuth } from "../../../../provider/authProvider";
 import { jwtDecode } from "jwt-decode";
 import { updateCustomer } from "../../../../services/apiCustomer";
+import { useUserState } from "../../../../provider/UserContext";
 
 function AccountInfomation() {
   const { token } = useAuth();
   const decode = jwtDecode(token);
+
+  const { setChangedUserInfo } = useUserState();
 
   const [myInfo, setMyInfo] = useState();
   const [formData, setFormData] = useState({
@@ -77,6 +80,7 @@ function AccountInfomation() {
 
       setOpenSB(true);
       setContentSB("Cập nhật thông tin thành công");
+      setChangedUserInfo(true);
     } catch (e) {
       console.log(e);
     }

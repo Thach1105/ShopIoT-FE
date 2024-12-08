@@ -242,10 +242,11 @@ function ProductPage() {
             <h2 className="text-sm text-gray-600 mb-2">
               Phương thức thanh toán
             </h2>
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <img src="/visa.png" alt="Visa" className="h-8" />
-              <img src="/mastercard.png" alt="Mastercard" className="h-8" />
-              <img src="/amex.png" alt="American Express" className="h-8" />
+              <img src="/master-card.png" alt="Mastercard" className="h-8" />
+              <img src="/vnpay-logo.jpg" alt="Vnpay" className="h-8" />
+              <img src="/zalopay-logo.png" alt="Mastercard" className="h-8" />
             </div>
           </div>
 

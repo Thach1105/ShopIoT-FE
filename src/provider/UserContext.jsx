@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useAuth } from "./authProvider";
 import { getMyCart } from "../services/apiCart";
+import { getMyInfo } from "../services/authentication";
 
 const UserContext = createContext();
 
@@ -10,13 +11,15 @@ export const useUserState = () => useContext(UserContext);
 export function UserProvider({ children }) {
   const { token } = useAuth();
   const [cart, setCart] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
   const [changedCart, setChangedCart] = useState(true);
   const [changedViewedProduct, setChangeViewedProduct] = useState(true);
+  const [changeUserInfo, setChangedUserInfo] = useState(true);
   const [viewedProducts, setViewedProducts] = useState(
     JSON.parse(localStorage.getItem("viewedProducts")) || []
   );
 
-  console.log(cart);
+  console.log(userInfo);
 
   useEffect(() => {
     if (token && changedCart) {
@@ -29,12 +32,33 @@ export function UserProvider({ children }) {
           setCart(content);
           setChangedCart(false);
         } catch {
-          return [];
+          setChangedCart(false);
+          setCart([]);
         }
       }
       fetchMyCart();
     }
   }, [token, changedCart]);
+
+  useEffect(() => {
+    if (token && changeUserInfo) {
+      async function fetchMyInfo() {
+        try {
+          const response = await getMyInfo();
+          console.log(response);
+          const { data } = response;
+          const { content } = data;
+          setUserInfo(content);
+          setChangedUserInfo(false);
+        } catch {
+          setUserInfo({});
+          setChangedUserInfo(false);
+        }
+      }
+
+      fetchMyInfo();
+    }
+  }, [token, changeUserInfo]);
 
   const cartValue = useMemo(
     () => ({
@@ -43,8 +67,10 @@ export function UserProvider({ children }) {
       setChangedCart,
       viewedProducts,
       setChangeViewedProduct,
+      userInfo,
+      setChangedUserInfo,
     }),
-    [cart, setCart, viewedProducts]
+    [cart, setCart, viewedProducts, userInfo]
   );
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import InfoCard from "./InfoCard";
 import Card from "./Card";
+// import OrderNotification from "../../layout/OrderNotification";
 
 function Dashboard() {
   return (
@@ -61,6 +62,7 @@ function Dashboard() {
         <InfoCard title="Top Selling Item" value="122" icon="fas fa-star" />
         <InfoCard title="Visitors" value="11452" icon="fas fa-users" />
         <InfoCard title="Dealership" value="32" icon="fas fa-chart-line" />
+        {/* <OrderNotification /> */}
       </div>
     </div>
   );

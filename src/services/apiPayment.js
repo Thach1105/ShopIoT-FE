@@ -23,3 +23,11 @@ export async function redirectFromVNPAY(paramString) {
   );
   return response;
 }
+
+export async function redirectFromZALOPAY(paramString) {
+  console.log(paramString);
+  const response = await axiosInstance(
+    `/payment/redirect-from-zalopay?${paramString}`
+  );
+  return response;
+}

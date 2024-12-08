@@ -3,22 +3,22 @@ const CardGrid = () => {
     {
       title: "Smart Local",
       description: "Giải pháp toàn vẹn cho căn phòng của bạn",
-      image: "https://via.placeholder.com/600x400", // Thay bằng URL ảnh thực tế
+      image: "./section-smart-local.jpg",
     },
     {
       title: "Smart Home",
       description: "Chiếu sáng thông minh\nLung linh nhà Việt",
-      image: "https://via.placeholder.com/600x400", // Thay bằng URL ảnh thực tế
+      image: "./section-smart-home.jpg",
     },
     {
       title: "Smart Farming",
       description: "Hỗ trợ quang hợp\nThúc đẩy cây xanh phát triển",
-      image: "https://via.placeholder.com/600x400", // Thay bằng URL ảnh thực tế
+      image: "./section-smart-farming.jpg",
     },
     {
       title: "Smart City",
       description: "Ánh sáng xanh\nCho Thành phố trong lành",
-      image: "https://via.placeholder.com/600x400", // Thay bằng URL ảnh thực tế
+      image: "./section-smart-city.jpg",
     },
   ];
 

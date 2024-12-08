@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { redirectFromVNPAY } from "../services/apiPayment";
+import { redirectFromVNPAY, redirectFromZALOPAY } from "../services/apiPayment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleCheck,
@@ -22,9 +22,14 @@ function PaymentNotice() {
           paramObject[key] = value;
         });
 
-        const response = await redirectFromVNPAY(
-          new URLSearchParams(paramObject).toString()
-        );
+        const response =
+          paramObject["paymentType"] === "VNPAY"
+            ? await redirectFromVNPAY(
+                new URLSearchParams(paramObject).toString()
+              )
+            : await redirectFromZALOPAY(
+                new URLSearchParams(paramObject).toString()
+              );
         const { data } = response;
         console.log(data);
         setPaymentStatus({

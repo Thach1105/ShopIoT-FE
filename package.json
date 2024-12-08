@@ -22,6 +22,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@loadable/component": "^5.16.4",
     "@mui/material": "^6.1.6",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "crypto-js": "^4.2.0",
@@ -33,7 +34,8 @@
     "react-hook-form": "^7.53.2",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.27.0",
-    "react-select": "^5.8.3"
+    "react-select": "^5.8.3",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

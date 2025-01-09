@@ -7,6 +7,7 @@ import { Backdrop, Box, Modal, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { createOrder } from "../../../../services/apiOrder";
+import CircularIndeterminate from "../../../../utils/CircularIndeterminate";
 
 const styleModal = {
   position: "absolute",
@@ -48,7 +49,7 @@ function CreateOrder() {
   const { cartSummary } = location.state;
   const { products } = location.state;
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -145,6 +146,7 @@ function CreateOrder() {
   }, [selectedDistrict]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     let address = "Nhận tại cửa hàng";
     if (homeDelivery) {
       address = `${data.address}, ${data.ward.label}, ${data.district.label}, ${data.province.label}`;
@@ -175,6 +177,8 @@ function CreateOrder() {
       console.log(response);
       const { data } = response;
       const newOrder = data?.content;
+      console.log(newOrder);
+      setLoading(false);
       navigate("/tai-khoan/quan-ly-don-hang", { state: newOrder });
     } catch (error) {
       const { response } = error;
@@ -193,7 +197,7 @@ function CreateOrder() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex min-h-screen bg-white gap-5"
+      className="flex min-h-screen bg-white gap-5 relative"
     >
       {/* Phần form bên trái */}
       <div className="w-3/4 p-6 shadow-xl">
@@ -584,6 +588,7 @@ function CreateOrder() {
           </button>
         </div>
       </div>
+      {loading && <CircularIndeterminate />}
     </form>
   );
 }

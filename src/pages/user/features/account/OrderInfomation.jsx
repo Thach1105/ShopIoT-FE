@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { cancelOrder } from "../../../../services/apiOrder";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import MyModal from "../../../../utils/MyModal";
 import {
   paymentByVNPAY,
@@ -50,11 +50,11 @@ const displayStatusOrder = (status) => {
 
 function OrderInformation({ order, setOrder }) {
   const { orderDetail } = order;
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const [err, setErr] = useState();
   const [selectedProductRv, setSelectedProductRV] = useState();
-
+  console.log(orderDetail);
   const totalPriceItems = orderDetail.reduce(
     (total, item) => total + item.totalPrice,
     0
@@ -157,7 +157,8 @@ function OrderInformation({ order, setOrder }) {
       <div className="flex items-center gap-2 mb-6">
         <span
           onClick={() => {
-            navigate(0);
+            setOrder();
+            //navigate(0);
           }}
           className="cursor-pointer"
         >

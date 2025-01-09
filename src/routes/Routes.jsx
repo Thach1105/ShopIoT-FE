@@ -16,7 +16,7 @@ import BrandList from "../pages/admin/features/brand/BrandList";
 import ProductAdd from "../pages/admin/features/product/ProductAdd";
 import ProductList from "../pages/admin/features/product/ProductList";
 import ProductEdit from "../pages/admin/features/product/ProductEdit";
-import { getSingleProduct } from "../services/apiProduct";
+import { getProductBySlug, getSingleProduct } from "../services/apiProduct";
 import ProductDetail from "../pages/admin/features/product/ProductDetail";
 import { getBrands } from "../services/apiBrand";
 import ErrorPage from "../utils/ErrorPage";
@@ -34,22 +34,28 @@ import AccountLayout from "../pages/user/features/account/AccountInfoLayout";
 import MyOrder from "../pages/user/features/account/MyOrder";
 import AccountInfomation from "../pages/user/features/account/AccountInfomation";
 import PaymentNotice from "../utils/PaymentNotice";
+import Register from "../pages/login/Register";
+import AddSolution from "../pages/admin/features/solution/AddSolution";
+import ListSolution from "../pages/admin/features/solution/ListSolution";
+import {
+  getListSolution,
+  getSolutionById,
+  getSolutionBySlug,
+} from "../services/apiSolution";
+import UpdateSolution from "../pages/admin/features/solution/UpdateSolution";
+import ViewSolution from "../pages/user/features/solution/ViewSolution";
 
 function Routes() {
   const { role } = useAuth();
 
   const routesForPublic = [
     {
-      path: "/service",
-      element: <div>Service Page</div>,
-    },
-    {
-      path: "/about-us",
-      element: <div>About Us</div>,
-    },
-    {
       path: "/login",
       element: <LoginDashboard />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
     },
   ];
 
@@ -126,6 +132,7 @@ function Routes() {
           path: "/admin",
           element: <AdminLayout />,
           children: [
+            { path: "", element: <Dashboard /> },
             {
               path: "dashboard",
               element: <Dashboard />,
@@ -167,7 +174,46 @@ function Routes() {
                 return data?.content;
               },
             },
-
+            {
+              path: "solution",
+              element: <ListSolution />,
+              loader: async () => {
+                try {
+                  const response = await getListSolution();
+                  console.log(response);
+                  const { data } = response;
+                  return data.content;
+                } catch (error) {
+                  throw new Response(error.response.data?.message, {
+                    status: error.response?.status,
+                    //statusText: error.response.data?.message,
+                  });
+                }
+              },
+              errorElement: <ErrorPage />,
+            },
+            {
+              path: "solution/add",
+              element: <AddSolution />,
+            },
+            {
+              path: "solution/:solutionId",
+              element: <UpdateSolution />,
+              loader: async ({ params }) => {
+                try {
+                  const response = await getSolutionById(params.solutionId);
+                  console.log(response);
+                  const { data } = response;
+                  return data.content;
+                } catch (error) {
+                  throw new Response(error.response.data?.message, {
+                    status: error.response?.status,
+                    //statusText: error.response.data?.message,
+                  });
+                }
+              },
+              errorElement: <ErrorPage />,
+            },
             {
               path: "product/add",
               element: <ProductAdd />,
@@ -224,6 +270,35 @@ function Routes() {
         {
           path: "/san-pham/:slug",
           element: <ProductPage />,
+          loader: async ({ params }) => {
+            try {
+              const response = await getProductBySlug(params.slug);
+              const { data } = response;
+              return data.content;
+            } catch (error) {
+              throw new Response(error.response.data?.message, {
+                status: error.response?.status,
+              });
+            }
+          },
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: "/giai-phap/:slug",
+          element: <ViewSolution />,
+          loader: async ({ params }) => {
+            try {
+              const response = await getSolutionBySlug(params.slug);
+              const { data } = response;
+              return data.content;
+            } catch (error) {
+              throw new Response(error.response.data?.message, {
+                status: error.response?.status,
+                //statusText: error.response.data?.message,
+              });
+            }
+          },
+          errorElement: <ErrorPage />,
         },
         {
           path: "/tim-kiem",

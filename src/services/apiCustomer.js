@@ -3,6 +3,16 @@ import axiosInstance from "../configs/axiosInstance";
 
 //const url = `${config.url_Backend}`;
 
+export async function registerCustomer(newUser) {
+  const response = await axiosInstance.post(`/users/register`, newUser, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response;
+}
+
 export async function getUsers(pageNum, pageSize) {
   const response = await axiosInstance.get(
     `/users?pageNumber=${pageNum}&pageSize=${pageSize}`

@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { getProductBySlug } from "../../../../services/apiProduct";
 import Loading from "../../../../utils/Loading";
 import { formatNumber } from "../../../../utils/format";
@@ -57,13 +62,14 @@ function ProductPage() {
   const location = useLocation();
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { state } = location;
+  const state = useLoaderData();
+  // const { state } = location;
 
   const [openSB, setOpenSB] = useState(false);
   const [contentSB, setContentSB] = useState("");
 
   const [quantity, setQuantity] = useState(1);
-  const [product, setProduct] = useState();
+  const [product, setProduct] = useState(state);
   console.log(product);
 
   const saveProductToLocalStorage = (product) => {
@@ -190,8 +196,6 @@ function ProductPage() {
             {`Giảm ${product.discountPercentage}%`}
           </div>
           <div className="text-gray-500">{`SKU: ${product.sku}`}</div>
-
-          <StarRating rating={1} />
 
           <div className="mt-4">
             <span className="text-red-600 text-2xl font-bold">

@@ -1,11 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import vercel from "vite-plugin-vercel";
 
 // https://vite.dev/config/
 export default defineConfig({
   base: "./",
-  plugins: [react(), vercel()],
+  plugins: [react()],
+  server: {
+    port: 5173,
+  },
 
   build: {
     rollupOptions: {

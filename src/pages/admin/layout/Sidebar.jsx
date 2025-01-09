@@ -6,6 +6,7 @@ import {
   faTags,
   faRightFromBracket,
   faBarsStaggered,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
@@ -150,6 +151,32 @@ function Sidebar() {
                 <Link to={"/admin/customer-details/:customerId"}>
                   <span className="hover:text-yellow-200 font-semibold text-lg">
                     Thông tin người dùng
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          </details>
+        </div>
+        {/* Solutions */}
+        <div className="cursor-pointer p-2 rounded-lg hover:bg-purple-700">
+          <details>
+            <summary className="flex">
+              <span className="text-xl font-bold hover:text-yellow-200">
+                <FontAwesomeIcon icon={faLightbulb} /> Giải pháp
+              </span>
+            </summary>
+            <ul className="bg-base-100 rounded-t-none p-2">
+              <li>
+                <Link to={"/admin/solution/add"}>
+                  <span className="hover:text-yellow-200 font-semibold text-lg">
+                    Thêm giải pháp
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to={"/admin/solution"}>
+                  <span className="hover:text-yellow-200 font-semibold text-lg">
+                    Danh sách giải pháp
                   </span>
                 </Link>
               </li>

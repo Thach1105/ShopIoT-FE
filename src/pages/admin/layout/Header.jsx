@@ -1,34 +1,26 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../../provider/authProvider";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { useAdminState } from "../../../provider/AdminContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import {
-  changeStatusNotification,
-  getNotificationForAdmin,
-} from "../../../services/apiNotification";
+import { formatDateTime } from "../../../utils/format";
 import { Link } from "react-router-dom";
+import { viewedNotification } from "../../../services/apiNotification";
 
-export default function Header({ count, setCount }) {
+export default function Header() {
+  const {
+    setCountNewOrder,
+    notifications,
+    hasNextNotify,
+    setNotifications,
+    setLoadNotify,
+    setPageNumber,
+  } = useAdminState();
+  const [isOpen, setIsOpen] = useState(false);
+  const { countNewOrder } = useAdminState();
   const { token } = useAuth();
   const [userInfo, setUserInfo] = useState({});
-  const [openNotification, setOpenNotification] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-
-  const fetchNotification = useCallback(async () => {
-    if (isFetching) return; // Tránh gọi API liên tục
-
-    setIsFetching(true);
-    const response = await getNotificationForAdmin();
-    const { data } = response;
-    setNotifications(data?.content);
-    setIsFetching(false);
-  }, [isFetching]);
-
-  useEffect(() => {
-    fetchNotification();
-  }, [count, fetchNotification]);
 
   useEffect(() => {
     const decode = jwtDecode(token);
@@ -36,83 +28,106 @@ export default function Header({ count, setCount }) {
     setUserInfo(data);
   }, [token]);
 
-  const handleViewNotification = async (id) => {
-    await changeStatusNotification(id);
-    setCount((c) => c - 1);
+  const toggleDropdown = () => {
+    setCountNewOrder(0);
+    setIsOpen(!isOpen);
+  };
+
+  const markAsRead = async (id) => {
+    const index = notifications.findIndex((n) => n.id === id);
+    console.log(index);
+    if (index) {
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification.id === id
+            ? { ...notification, hasViewed: true } // Tạo bản sao và thay đổi trạng thái
+            : notification
+        )
+      );
+    }
+
+    await viewedNotification(id);
   };
 
   return (
     <div className="flex justify-end items-center py-2 px-4 bg-gradient-to-r from-pink-300 via-purple-400 to-blue-500 rounded-lg">
       <div className="flex items-center gap-3">
-        <div
-          onMouseEnter={() => setOpenNotification(true)}
-          className="relative inline-block cursor-pointer"
-        >
-          <FontAwesomeIcon
-            icon={faCartPlus}
-            size="xl"
-            className="text-gray-700"
-          />
-          {count > 0 && (
-            <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-              {count}
-            </span>
-          )}
-          {openNotification && (
-            <div
-              onMouseLeave={() => setOpenNotification(false)}
-              className="absolute right-0 mt-2 w-96 bg-white shadow-lg rounded-lg p-4 z-[51] divide-y divide-gray-200 border border-gray-200"
-            >
-              <div className="pb-2">
-                <h4 className="font-semibold text-lg text-gray-800">
-                  Đơn hàng mới:
-                </h4>
-              </div>
-              <div className="max-h-60 overflow-y-auto space-y-2">
-                {notifications.length > 0 ? (
-                  notifications.map(({ id, orderCode, message, hasViewed }) => (
+        <div className="flex items-center">
+          {/* thông báo đơn hàng mới */}
+          <div className="relative">
+            {/* Icon giỏ hàng */}
+            <button className="relative text-gray-700" onClick={toggleDropdown}>
+              <FontAwesomeIcon icon={faCartPlus} size="2xl" />
+              {/* Badge */}
+
+              {countNewOrder > 0 ? (
+                <span className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
+                  {countNewOrder}
+                </span>
+              ) : (
+                <></>
+              )}
+            </button>
+
+            {/* Dropdown thông báo */}
+            {isOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-10">
+                <div className="p-4 border-b">
+                  <h2 className="text-xl font-bold text-gray-700">Thông báo</h2>
+                </div>
+                <ul className="max-h-72 overflow-y-auto">
+                  {notifications.map((notification) => (
                     <Link
-                      onClick={handleViewNotification(id)}
-                      key={id}
-                      to={`/admin/order-code/${orderCode}`}
-                      className={`p-2 rounded-lg flex items-center justify-between ${
-                        hasViewed ? "bg-gray-100" : "bg-blue-50"
-                      }`}
+                      to={`/admin/order-code/${notification.orderCode}`}
+                      key={notification.id}
+                      className={`p-4 flex items-start gap-3 ${
+                        notification.hasViewed ? "bg-gray-100" : "bg-white"
+                      } hover:bg-gray-200 cursor-pointer border-b`}
+                      onClick={() => {
+                        markAsRead(notification.id);
+                        isOpen(false);
+                      }}
                     >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {message}
+                      <div className="flex-grow">
+                        <p className="text-sm font-bold text-gray-800">
+                          {notification.message}
                         </p>
-                        <p className="text-xs text-gray-600">
-                          Mã đơn hàng: {orderCode}
+                        <p className="text-xs text-gray-500">
+                          Mã đơn hàng: {notification.orderCode}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {formatDateTime(notification.timestamp)}
                         </p>
                       </div>
-                      {!hasViewed && (
-                        <span className="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1">
-                          Mới
-                        </span>
+                      {!notification.hasViewed && (
+                        <span className="bg-blue-500 text-white text-[10px] font-bold rounded-full w-3 h-3 flex items-center justify-center"></span>
                       )}
                     </Link>
-                  ))
-                ) : (
-                  <p className="text-gray-600 text-center">
-                    Không có thông báo mới.
-                  </p>
+                  ))}
+                </ul>
+                {hasNextNotify && (
+                  <div
+                    onClick={() => {
+                      setLoadNotify(true);
+                      setPageNumber((p) => p + 1);
+                    }}
+                    className="p-3 text-center text-sm text-blue-500 cursor-pointer hover:underline"
+                  >
+                    Xem thêm thông báo trước
+                  </div>
                 )}
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="flex items-center">
           <img
             src="https://placehold.co/40x40"
             alt="User profile"
-            className="rounded-full w-10 h-10 mr-2"
+            className="rounded-full w-10 h-10 mr-2 ml-4"
           />
           <div>
             <div className="font-bold">{userInfo.username}</div>
-            <div className="text-sm text-gray-500">Admin Profile</div>
+            {/* <div className="text-sm text-gray-500">Admin Profile</div> */}
           </div>
         </div>
       </div>

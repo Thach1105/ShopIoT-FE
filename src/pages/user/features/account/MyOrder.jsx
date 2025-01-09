@@ -117,6 +117,7 @@ function MyOrder() {
   const [filter, setFilter] = useState("ALL");
   const [currentOrders, setCurrentOrders] = useState([]);
   console.log(myOrders);
+  console.log(orderSelected);
 
   useEffect(() => {
     async function fetchOrder() {

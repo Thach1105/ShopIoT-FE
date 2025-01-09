@@ -15,6 +15,7 @@ import { searchForCustomer } from "../../../services/apiProduct";
 import { logout } from "../../../services/authentication";
 import { formatNumber } from "../../../utils/format";
 import { useUserState } from "../../../provider/UserContext";
+import { getListSolutionPublic } from "../../../services/apiSolution";
 
 function Header() {
   const { cart, userInfo } = useUserState();
@@ -26,9 +27,9 @@ function Header() {
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
   const [isSolutionMenuOpen, setIsSolutionMenuOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [solutions, setSolutions] = useState([]);
   const [categorySelected, setCategorySelected] = useState();
   const [resultSearch, setResultSearch] = useState([]);
-
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   // useEffect(() => {
@@ -43,12 +44,19 @@ function Header() {
   useEffect(() => {
     async function fetchCategories() {
       const response = await getCategoriesTree();
-      console.log(response);
       const { data } = response;
       setCategories(data?.content);
     }
 
+    async function fetchListSolutions() {
+      const response = await getListSolutionPublic();
+      console.log(response);
+      const { data } = response;
+      setSolutions(data?.content);
+    }
+
     fetchCategories();
+    fetchListSolutions();
   }, []);
 
   useEffect(() => {
@@ -328,17 +336,18 @@ function Header() {
             <p className="text-center">Giải pháp</p>
 
             {isSolutionMenuOpen && (
-              <div className="absolute top-full left-0 bg-white text-stone-900 w-full shadow-lg rounded-sm z-10">
+              <div className="absolute top-full left-0 bg-white text-stone-900 w-[600px] shadow-lg rounded-sm z-10">
                 <div className="flex flex-col p-3 space-y-2">
-                  <Link className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer">
-                    Giải pháp
-                  </Link>
-                  <Link className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer">
-                    Giải pháp
-                  </Link>
-                  <Link className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer">
-                    Giải pháp
-                  </Link>
+                  {solutions.map((solution) => (
+                    <Link
+                      to={`/giai-phap/${solution.slug}`}
+                      key={solution.id}
+                      className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer"
+                    >
+                      {solution.name}
+                    </Link>
+                  ))}
+
                   <Link className="hover:bg-sky-200 hover:text-blue-500 p-2 cursor-pointer">
                     Giải pháp
                   </Link>

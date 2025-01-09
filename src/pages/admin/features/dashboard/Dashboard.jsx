@@ -1,69 +1,178 @@
 import InfoCard from "./InfoCard";
-import Card from "./Card";
-// import OrderNotification from "../../layout/OrderNotification";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
+import { faBox } from "@fortawesome/free-solid-svg-icons";
+import { formatNumber } from "../../../../utils/format";
+import { useEffect, useState } from "react";
+import { getStatisticsData } from "../../../../services/apiStatistic";
+import { Alert } from "@mui/material";
 
 function Dashboard() {
+  const [messageErr, setMessageErr] = useState("");
+  const [statistic, setStatistic] = useState();
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
+
+  useEffect(() => {
+    async function loadData() {
+      if (startDate && endDate) {
+        const response = await getStatisticsData(startDate, endDate);
+        const { data } = response;
+
+        setStatistic(data.content);
+      }
+    }
+
+    loadData();
+  }, [startDate, endDate]);
+
+  const handleStartDateChange = (event) => {
+    const now = new Date();
+    const dateChange = new Date(event.target.value);
+    if (dateChange <= now && dateChange <= new Date(endDate)) {
+      setStartDate(event.target.value);
+    } else {
+      setMessageErr("Vui lòng chọn thời gian phù hợp");
+    }
+  };
+
+  const handleEndDateChange = (event) => {
+    const now = new Date();
+    const dateChange = new Date(event.target.value);
+
+    if (dateChange <= now && dateChange >= new Date(startDate)) {
+      setEndDate(event.target.value);
+    } else {
+      setMessageErr("Vui lòng chọn thời gian phù hợp");
+    }
+  };
+
   return (
-    <div className="">
-      <div className="grid grid-cols-5 gap-4 mb-6">
-        <Card
-          color="bg-green-100"
-          icon="fas fa-dollar-sign"
-          title="Revenue"
-          value="$18,925"
-        />
-        <Card
-          color="bg-red-100"
-          icon="fas fa-credit-card"
-          title="Expense"
-          value="$11,024"
-        />
-        <Card
-          color="bg-yellow-100"
-          icon="fas fa-smile"
-          title="Happy Clients"
-          value="8,925"
-        />
-        <Card
-          color="bg-blue-100"
-          icon="fas fa-store"
-          title="New StoreOpen"
-          value="8,925"
-        />
-        {/* <div className="flex items-center justify-center">
+    <div className="p-6">
+      <span className="text-2xl font-semibold">Khoảng thời gian thống kê:</span>
+      {messageErr && (
+        <Alert
+          className="my-2 w-fit"
+          severity="warning"
+          onClose={() => {
+            setMessageErr("");
+          }}
+        >
+          {messageErr}
+        </Alert>
+      )}
+      {/* Phần input chọn khoảng thời gian */}
+      <div className="flex gap-6 my-4">
+        <div className="font-semibold">
+          <label className="text-lg">Từ: </label>
           <input
-            type="text"
-            placeholder="mm/dd/yyyy"
-            className="pl-4 pr-10 py-2 rounded-full border border-gray-300 focus:outline-none"
+            className="rounded-md p-2"
+            type="date"
+            value={startDate}
+            onChange={handleStartDateChange}
           />
-          <i className="fas fa-filter absolute right-3 top-2.5 text-gray-400"></i>
-        </div> */}
+        </div>
+
+        <div className="font-semibold">
+          <label className="text-lg">Đến: </label>
+
+          <input
+            className="rounded-md p-2"
+            type="date"
+            value={endDate}
+            onChange={handleEndDateChange}
+          />
+        </div>
       </div>
-      <div className="flex mb-6">
-        <button className="bg-purple-600 text-white py-2 px-4 rounded-l-full">
-          Today
-        </button>
-        <button className="bg-white text-purple-600 py-2 px-4 border border-purple-600">
-          Week
-        </button>
-        <button className="bg-white text-purple-600 py-2 px-4 border border-purple-600">
-          Month
-        </button>
-        <button className="bg-white text-purple-600 py-2 px-4 rounded-r-full border border-purple-600">
-          Year
-        </button>
-      </div>
+
+      {/* Các thẻ thông tin */}
       <div className="grid grid-cols-4 gap-4">
-        <InfoCard title="Customers" value="14,208" icon="fas fa-user" />
-        <InfoCard title="Order" value="2314" icon="fas fa-shopping-cart" />
-        <InfoCard title="Avg Sale" value="$1770" icon="fas fa-percentage" />
-        <InfoCard title="Total Sale" value="$35000" icon="fas fa-calculator" />
-        <InfoCard title="Total Products" value="184511" icon="fas fa-box" />
-        <InfoCard title="Top Selling Item" value="122" icon="fas fa-star" />
-        <InfoCard title="Visitors" value="11452" icon="fas fa-users" />
-        <InfoCard title="Dealership" value="32" icon="fas fa-chart-line" />
-        {/* <OrderNotification /> */}
+        <InfoCard
+          title="Khách hàng"
+          value={statistic?.totalCustomer || "0"}
+          icon={faUser}
+        />
+        <InfoCard
+          title="Số lượng đơn hàng"
+          value={statistic?.totalOrder || "0"}
+          icon={faCartShopping}
+        />
+        <InfoCard
+          title="Tổng doanh thu đã nhận"
+          value={`${formatNumber(statistic?.totalPrice || 0)}đ`}
+          icon={faCalculator}
+        />
+        <InfoCard
+          title="Tổng sản phẩm đã bán"
+          value={statistic?.totalProduct || "0"}
+          icon={faBox}
+        />
       </div>
+
+      {/* Bảng sản phẩm bán chạy */}
+      {statistic?.topOrderedProduct?.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Sản phẩm bán chạy nhất:
+          </h2>
+          <table className="bg-white table-auto border-collapse border border-gray-300 w-full">
+            <thead>
+              <tr className="bg-white">
+                <th className="border border-gray-300 px-4 py-2">Hình ảnh</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Tên sản phẩm
+                </th>
+                <th className="border border-gray-300 px-4 py-2">Giá</th>
+                <th className="border border-gray-300 px-4 py-2 w-12">
+                  <p className="text-nowrap">Số lượng đặt</p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {statistic.topOrderedProduct.map((product) => (
+                <tr key={product.productId}>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <img
+                      src={product.productImage}
+                      alt={product.productName}
+                      className="w-16 h-16 object-cover"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <div>
+                      <p className="text-blue-700 text-lg font-semibold hover:underline cursor-pointer">
+                        {product.productName}
+                      </p>
+                      <p className="text-xs font-semibold">
+                        SKU: {product.sku}
+                      </p>
+                    </div>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {formatNumber(product.cost)}đ
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {product.totalOrdered}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

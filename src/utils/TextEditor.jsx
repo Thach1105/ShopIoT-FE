@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 // import "react-quill/dist/quill.snow.css";
 import loadable from "@loadable/component";
-
 const ReactQuill = loadable(() => import("react-quill"));
 
 function TextEditor({ text, setText }) {
@@ -69,11 +68,6 @@ function TextEditor({ text, setText }) {
   // eslint-disable-next-line no-unused-vars
   const handleProcedureContentChange = (content, delta, source, editor) => {
     setText(content);
-    //let has_attribues = delta.ops[1].attributes || "";
-    //console.log(has_attribues);
-    //const cursorPosition = e.quill.getSelection().index;
-    // this.quill.insertText(cursorPosition, "★");
-    //this.quill.setSelection(cursorPosition + 1);
   };
 
   return (

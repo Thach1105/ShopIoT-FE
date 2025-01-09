@@ -46,7 +46,7 @@ function LoginDashboard() {
         const { response } = error;
         const { data } = response;
         const { code } = data;
-        if (code === 1001) {
+        if (code === 11000) {
           setErrMsg("Mật khẩu không chính xác");
         } else if (code === 1003) {
           setErrMsg("Tên đăng nhập không tồn tại");
@@ -104,10 +104,16 @@ function LoginDashboard() {
               />
             </div>
 
-            <div className="flex justify-end items-center mb-4">
-              <a href="#" className="text-gray-700">
+            <div className="flex justify-between items-center mb-4">
+              <Link
+                to={"/forgot-password"}
+                className="text-gray-700 hover:underline"
+              >
                 Quên mật khẩu
-              </a>
+              </Link>
+              <Link to={"/register"} className="text-gray-700 hover:underline">
+                Đăng ký
+              </Link>
             </div>
             <button
               className="w-full bg-violet-500 text-white py-2 rounded-lg hover:bg-gray-800"
@@ -129,7 +135,7 @@ function LoginDashboard() {
         </div>
         <Link
           to={"/"}
-          className="hidden md:block md:w-1/2 bg-cover"
+          className="hidden md:block md:w-1/2 bg-cover cursor-pointer"
           style={{ backgroundImage: "url('./Logo-ShopIoT.webp')" }}
         ></Link>
       </div>

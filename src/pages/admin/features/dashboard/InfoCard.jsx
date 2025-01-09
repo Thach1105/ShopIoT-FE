@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 // eslint-disable-next-line react/prop-types
 export default function InfoCard({ title, value, icon }) {
   return (
@@ -6,7 +8,7 @@ export default function InfoCard({ title, value, icon }) {
         <div className="text-gray-600">{title}</div>
         <div className="text-xl font-bold">{value}</div>
       </div>
-      <i className={`${icon} text-2xl text-gray-400`}></i>
+      <FontAwesomeIcon className={`text-2xl text-gray-400`} icon={icon} />
     </div>
   );
 }

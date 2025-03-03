@@ -68,7 +68,7 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     if (!token) return;
 
-    const socket = new SockJS(`http://54.252.164.25:8080/shopIoT/api/ws`);
+    const socket = new SockJS(`http://localhost:8080/shopIoT/api/ws`);
     const stompClient = Stomp.over(socket);
 
     stompClient.connect(
